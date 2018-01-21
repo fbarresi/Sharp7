@@ -5,6 +5,11 @@ VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharp7", "Sharp7\Sharp7.csproj", "{4FE194AF-7FFE-48BA-9DFC-425E9D5B9F46}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_nuspec", "_nuspec", "{FD318289-9BB8-4FF2-BB45-DFA4FE6BAEF8}"
+	ProjectSection(SolutionItems) = preProject
+		_nuspec\sharp7.nuspec = _nuspec\sharp7.nuspec
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
