@@ -2,11 +2,12 @@
 <package>
     <metadata>
     <id>Sharp7</id>
-    <version>1.0.0</version>
+    <version>1.0.3</version>
     <title>Sharp7</title>
     <authors>Federico Barresi</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Ethernet S7 PLC communication suite</description>
+    <description>Multi-platform Ethernet S7 PLC communication suite (C# port of Snap7 Client by davenardella)</description>
+    <projectUrl>https://github.com/fbarresi/Sharp7</projectUrl>
     <copyright>Copyright 2018</copyright>
     </metadata>
   <files>
