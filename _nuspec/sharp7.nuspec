@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+    <id>Sharp7</id>
+    <version>1.0.0</version>
+    <title>Sharp7</title>
+    <authors>Federico Barresi</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Ethernet S7 PLC communication suite</description>
+    <copyright>Copyright 2018</copyright>
+    </metadata>
+  <files>
+    <file src="..\out\x64\Release\Sharp7.*" target="build\x64" />
+    <file src="..\out\x86\Release\Sharp7.*" target="build\x86" />
+    <file src="..\out\Release\Sharp7.*" target="lib\net45" />
+  </files>
+</package>
