@@ -1,9 +1,9 @@
-$version = [System.Reflection.Assembly]::LoadFile("out\Release\Sharp7.dll").GetName().Version
+$version = [System.Reflection.Assembly]::LoadFile("C:\projects\sharp7\out\Release\Sharp7.dll").GetName().Version
 $versionStr = "{0}.{1}.{2}" -f ($version.Major, $version.Minor, $version.Build)
 
 Write-Host "Setting .nuspec version tag to $versionStr"
 
-$content = (Get-Content Sharp7.nuspec) 
+$content = (Get-Content _nuspec\Sharp7.nuspec) 
 $content = $content -replace '\$version\$',$versionStr
 
 $content | Out-File _nuspec\Sharp7.compiled.nuspec
