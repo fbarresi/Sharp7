@@ -11,8 +11,6 @@
     <copyright>Copyright 2018</copyright>
     </metadata>
   <files>
-    <file src="..\out\x64\Release\Sharp7.*" target="build\x64" />
-    <file src="..\out\x86\Release\Sharp7.*" target="build\x86" />
     <file src="..\out\Release\Sharp7.*" target="lib\net45" />
   </files>
 </package>
