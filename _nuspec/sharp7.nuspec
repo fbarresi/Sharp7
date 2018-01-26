@@ -2,7 +2,7 @@
 <package>
     <metadata>
     <id>Sharp7</id>
-    <version>1.0.3</version>
+    <version>$version$</version>
     <title>Sharp7</title>
     <authors>Federico Barresi</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
