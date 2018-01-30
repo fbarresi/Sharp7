@@ -8,6 +8,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Multi-platform Ethernet S7 PLC communication suite (C# port of Snap7 Client by davenardella)</description>
     <projectUrl>https://github.com/fbarresi/Sharp7</projectUrl>
+    <licenseUrl>https://raw.githubusercontent.com/fbarresi/Sharp7/master/LICENSE</licenseUrl>
     <copyright>Copyright 2018</copyright>
     </metadata>
   <files>
