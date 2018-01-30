@@ -77,7 +77,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sharp7.cs" />
+    <Compile Include="S7.cs" />
+    <Compile Include="S7Client.cs" />
+    <Compile Include="S7Consts.cs" />
+    <Compile Include="S7MultiVar.cs" />
+    <Compile Include="S7Timer.cs" />
+    <Compile Include="MsgSocket.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
