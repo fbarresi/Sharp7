@@ -13,5 +13,7 @@
     </metadata>
   <files>
     <file src="..\out\Release\Sharp7.*" target="lib\net45" />
+    <file src="..\out\Release\Sharp7.*" target="lib\netcore" />
+    <file src="..\out\Release\Sharp7.*" target="lib\netstandard" />
   </files>
 </package>
