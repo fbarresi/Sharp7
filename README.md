@@ -7,11 +7,16 @@
 
 Nuget package for Sharp7 - The multi-platform Ethernet S7 PLC communication suite
 
-Sharp7 is just a C# port of [Snap7](http://snap7.sourceforge.net)
+Sharp7 is a C# port of [Snap7](http://snap7.sourceforge.net)
 
-For usage and documentation please visit the official page: [http://snap7.sourceforge.net](http://snap7.sourceforge.net)
+You can visit the official page: [http://snap7.sourceforge.net](http://snap7.sourceforge.net)
+or read the [documentation](https://github.com/fbarresi/Sharp7/blob/master/doc/documentation.md).
 
-# How to install
+## How to install
 ```
 PM> Install-Package Sharp7
 ```
+
+## Do you need more power?
+
+Also try [Sharp7Reactive](https://github.com/evopro-ag/Sharp7Reactive)
