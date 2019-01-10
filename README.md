@@ -1,3 +1,4 @@
+![alt text](https://raw.githubusercontent.com/fbarresi/sharp7/master/doc/images/logo.jpg)
 # Sharp7
 
 [![Build status](https://ci.appveyor.com/api/projects/status/2i77qfjjq8aep50b?svg=true)](https://ci.appveyor.com/project/fbarresi/sharp7)
