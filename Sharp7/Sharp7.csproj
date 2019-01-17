@@ -3,11 +3,13 @@
   <PropertyGroup>
     <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Authors>Federico Barresi</Authors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/fbarresi/Sharp7</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/fbarresi/Sharp7/master/LICENSE</PackageLicenseUrl>
-    <PackageTags>snap7 s7 simantic</PackageTags>
+    <PackageTags>snap7 s7 simatic siemens</PackageTags>
     <Company />
     <Version>1.0.0</Version>
     <PackageIconUrl>https://raw.githubusercontent.com/fbarresi/Sharp7/master/doc/images/logo.jpg</PackageIconUrl>
