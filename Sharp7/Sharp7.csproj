@@ -6,6 +6,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Authors>Federico Barresi</Authors>
+    <Description>The multi-platform Ethernet S7 PLC communication suite</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/fbarresi/Sharp7</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/fbarresi/Sharp7/master/LICENSE</PackageLicenseUrl>
