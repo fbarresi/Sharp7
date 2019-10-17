@@ -57,9 +57,9 @@ namespace Sharp7
         private const ushort Code7DataOverPDU = 0x8500;
 
         // Client Connection Type
-        public static readonly UInt16 CONNTYPE_PG = 0x01;  // Connect to the PLC as a PG
-        public static readonly UInt16 CONNTYPE_OP = 0x02;  // Connect to the PLC as an OP
-        public static readonly UInt16 CONNTYPE_BASIC = 0x03;  // Basic connection 
+        public static readonly ushort CONNTYPE_PG = 0x01;  // Connect to the PLC as a PG
+        public static readonly ushort CONNTYPE_OP = 0x02;  // Connect to the PLC as an OP
+        public static readonly ushort CONNTYPE_BASIC = 0x03;  // Basic connection 
 
         public int _LastError = 0;
 
@@ -105,13 +105,13 @@ namespace Sharp7
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct S7BlocksList
         {
-            public Int32 OBCount;
-            public Int32 FBCount;
-            public Int32 FCCount;
-            public Int32 SFBCount;
-            public Int32 SFCCount;
-            public Int32 DBCount;
-            public Int32 SDBCount;
+            public int OBCount;
+            public int FBCount;
+            public int FCCount;
+            public int SFBCount;
+            public int SFCCount;
+            public int DBCount;
+            public int SDBCount;
         };
 
         // Managed Block Info
@@ -140,8 +140,8 @@ namespace Sharp7
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct SZL_HEADER
         {
-            public UInt16 LENTHDR;
-            public UInt16 N_DR;
+            public ushort LENTHDR;
+            public ushort N_DR;
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -158,7 +158,7 @@ namespace Sharp7
         {
             public SZL_HEADER Header;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 0x2000 - 2)]
-            public UInt16[] Data;
+            public ushort[] Data;
         };
 
         // S7 Protection
@@ -761,7 +761,7 @@ namespace Sharp7
             return 0;
         }
 
-        public int GetParam(Int32 ParamNumber, ref int Value)
+        public int GetParam(int ParamNumber, ref int Value)
         {
             int Result = 0;
             switch (ParamNumber)
@@ -1069,7 +1069,7 @@ namespace Sharp7
                     {
                         if (Length == 22)
                         {
-                            if (PDU[21] != (byte)0xFF)
+                            if (PDU[21] != 0xFF)
                                 _LastError = CpuError(PDU[21]);
                         }
                         else
@@ -1163,7 +1163,7 @@ namespace Sharp7
                 return _LastError;
             // Get true ItemsCount
             int ItemsRead = S7.GetByteAt(PDU, 20);
-            if ((ItemsRead != ItemsCount) || (ItemsRead > MaxVars))
+            if (ItemsRead != ItemsCount || ItemsRead > MaxVars)
             {
                 _LastError = S7Consts.errCliInvalidPlcAnswer;
                 return _LastError;
@@ -1844,15 +1844,9 @@ namespace Sharp7
             return _LastError;
         }
 
-        public static int PlcCopyRamToRom(uint Timeout)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int PlcCopyRamToRom(uint Timeout) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int PlcCompress(uint Timeout)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int PlcCompress(uint Timeout) => S7Consts.errCliFunctionNotImplemented;
 
         public int PlcGetStatus(ref int Status)
         {
@@ -2015,125 +2009,53 @@ namespace Sharp7
 
         #region [Async functions (not implemented)]
 
-        public static int AsReadArea(int Area, int DBNumber, int Start, int Amount, int WordLen, byte[] Buffer)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsReadArea(int Area, int DBNumber, int Start, int Amount, int WordLen, byte[] Buffer) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsWriteArea(int Area, int DBNumber, int Start, int Amount, int WordLen, byte[] Buffer)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsWriteArea(int Area, int DBNumber, int Start, int Amount, int WordLen, byte[] Buffer) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsDBRead(int DBNumber, int Start, int Size, byte[] Buffer)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsDBRead(int DBNumber, int Start, int Size, byte[] Buffer) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsDBWrite(int DBNumber, int Start, int Size, byte[] Buffer)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsDBWrite(int DBNumber, int Start, int Size, byte[] Buffer) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsMBRead(int Start, int Size, byte[] Buffer)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsMBRead(int Start, int Size, byte[] Buffer) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsMBWrite(int Start, int Size, byte[] Buffer)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsMBWrite(int Start, int Size, byte[] Buffer) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsEBRead(int Start, int Size, byte[] Buffer)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsEBRead(int Start, int Size, byte[] Buffer) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsEBWrite(int Start, int Size, byte[] Buffer)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsEBWrite(int Start, int Size, byte[] Buffer) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsABRead(int Start, int Size, byte[] Buffer)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsABRead(int Start, int Size, byte[] Buffer) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsABWrite(int Start, int Size, byte[] Buffer)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsABWrite(int Start, int Size, byte[] Buffer) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsTMRead(int Start, int Amount, ushort[] Buffer)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsTMRead(int Start, int Amount, ushort[] Buffer) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsTMWrite(int Start, int Amount, ushort[] Buffer)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsTMWrite(int Start, int Amount, ushort[] Buffer) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsCTRead(int Start, int Amount, ushort[] Buffer)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsCTRead(int Start, int Amount, ushort[] Buffer) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsCTWrite(int Start, int Amount, ushort[] Buffer)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsCTWrite(int Start, int Amount, ushort[] Buffer) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsListBlocksOfType(int BlockType, ushort[] List)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsListBlocksOfType(int BlockType, ushort[] List) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsReadSZL(int ID, int Index, ref S7SZL Data, ref Int32 Size)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsReadSZL(int ID, int Index, ref S7SZL Data, ref int Size) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsReadSZLList(ref S7SZLList List, ref Int32 ItemsCount)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsReadSZLList(ref S7SZLList List, ref Int32 ItemsCount) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsUpload(int BlockType, int BlockNum, byte[] UsrData, ref int Size)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsUpload(int BlockType, int BlockNum, byte[] UsrData, ref int Size) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsFullUpload(int BlockType, int BlockNum, byte[] UsrData, ref int Size)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsFullUpload(int BlockType, int BlockNum, byte[] UsrData, ref int Size) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int ASDownload(int BlockNum, byte[] UsrData, int Size)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int ASDownload(int BlockNum, byte[] UsrData, int Size) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsPlcCopyRamToRom(UInt32 Timeout)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsPlcCopyRamToRom(UInt32 Timeout) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsPlcCompress(UInt32 Timeout)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsPlcCompress(UInt32 Timeout) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsDBGet(int DBNumber, byte[] UsrData, ref int Size)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsDBGet(int DBNumber, byte[] UsrData, ref int Size) => S7Consts.errCliFunctionNotImplemented;
 
-        public static int AsDBFill(int DBNumber, int FillChar)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int AsDBFill(int DBNumber, int FillChar) => S7Consts.errCliFunctionNotImplemented;
 
         public static bool CheckAsCompletion(ref int opResult)
         {
@@ -2141,10 +2063,7 @@ namespace Sharp7
             return false;
         }
 
-        public static int WaitAsCompletion(int Timeout)
-        {
-            return S7Consts.errCliFunctionNotImplemented;
-        }
+        public static int WaitAsCompletion(int Timeout) => S7Consts.errCliFunctionNotImplemented;
 
         #endregion
 

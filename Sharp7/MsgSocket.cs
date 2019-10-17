@@ -4,13 +4,9 @@ using System.Net.Sockets;
 
 namespace Sharp7
 {
-
     class MsgSocket
     {
         private Socket TCPSocket;
-        private int _ReadTimeout = 2000;
-        private int _WriteTimeout = 2000;
-        private int _ConnectTimeout = 1000;
         public int LastError = 0;
 
         public MsgSocket()
@@ -33,8 +29,10 @@ namespace Sharp7
 
         private void CreateSocket()
         {
-            TCPSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            TCPSocket.NoDelay = true;
+            TCPSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+            {
+                NoDelay = true
+            };
         }
 
         private void TCPPing(string Host, int Port)
@@ -45,11 +43,10 @@ namespace Sharp7
             Socket PingSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
             {
-
                 IAsyncResult result = PingSocket.BeginConnect(Host, Port, null, null);
-                bool success = result.AsyncWaitHandle.WaitOne(_ConnectTimeout, true);
+                bool success = result.AsyncWaitHandle.WaitOne(ConnectTimeout, true);
 
-				if (!success)
+                if (!success)
                 {
                     LastError = S7Consts.errTCPConnectionFailed;
                 }
@@ -57,7 +54,7 @@ namespace Sharp7
             catch
             {
                 LastError = S7Consts.errTCPConnectionFailed;
-            };
+            }
             PingSocket.Close();
         }
 
@@ -65,18 +62,18 @@ namespace Sharp7
         {
             LastError = 0;
             if (!Connected)
-            { 
+            {
                 TCPPing(Host, Port);
                 if (LastError == 0)
-                try
-                {
+                    try
+                    {
                         CreateSocket();
                         TCPSocket.Connect(Host, Port);
-                }
-                catch
-                {
+                    }
+                    catch
+                    {
                         LastError = S7Consts.errTCPConnectionFailed;
-                }
+                    }
             }
             return LastError;
         }
@@ -97,12 +94,12 @@ namespace Sharp7
                     Expired = Environment.TickCount - Elapsed > Timeout;
                     // If timeout we clean the buffer
                     if (Expired && (SizeAvail > 0))
-                    try
-                    {
-                        byte[] Flush = new byte[SizeAvail];
-                        TCPSocket.Receive(Flush, 0, SizeAvail, SocketFlags.None);
-                    }
-                    catch { }
+                        try
+                        {
+                            byte[] Flush = new byte[SizeAvail];
+                            TCPSocket.Receive(Flush, 0, SizeAvail, SocketFlags.None);
+                        }
+                        catch { }
                 }
             }
             catch
@@ -118,9 +115,8 @@ namespace Sharp7
 
         public int Receive(byte[] Buffer, int Start, int Size)
         {
-
             int BytesRead = 0;
-            LastError = WaitForData(Size, _ReadTimeout);
+            LastError = WaitForData(Size, ReadTimeout);
             if (LastError == 0)
             {
                 try
@@ -155,48 +151,11 @@ namespace Sharp7
             return LastError;
         }
 
-        public bool Connected
-        {
-            get
-            {
-                return (TCPSocket != null) && (TCPSocket.Connected); 
-            }
-        }
+        public bool Connected => TCPSocket?.Connected == true;
 
-        public int ReadTimeout
-        {
-            get
-            {
-                return _ReadTimeout;
-            }
-            set
-            {
-                _ReadTimeout = value;
-            }
-        }
+        public int ReadTimeout { get; set; } = 2000;
 
-        public int WriteTimeout
-        {
-            get
-            {
-                return _WriteTimeout;
-            }
-            set
-            {
-                _WriteTimeout = value;
-            }
-
-        }
-        public int ConnectTimeout
-        {
-            get
-            {
-                return _ConnectTimeout;
-            }
-            set
-            {
-                _ConnectTimeout = value;
-            }
-        }
-    }   
+        public int WriteTimeout { get; set; } = 2000;
+        public int ConnectTimeout { get; set; } = 1000;
+    }
 }
