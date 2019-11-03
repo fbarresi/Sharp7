@@ -13,7 +13,6 @@ namespace Sharp7.Tests
         {
             server = new S7Server();
             var rc = server.StartTo(Localhost);
-            Task.Delay(100).Wait();
             rc.ShouldBe(0);
         }
 
