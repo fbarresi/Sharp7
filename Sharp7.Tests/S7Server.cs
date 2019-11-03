@@ -18,6 +18,11 @@ namespace Sharp7.Tests
         private const int MkLog = 1;
 
         // Server Area ID  (use with Register/unregister - Lock/unlock Area)
+        public static readonly int SrvAreaPe = 0;
+        public static readonly int SrvAreaPa = 1;
+        public static readonly int SrvAreaMk = 2;
+        public static readonly int SrvAreaCt = 3;
+        public static readonly int SrvAreaTm = 4;
         public static readonly int SrvAreaDB = 5;
 
         // S7 Server Event Code

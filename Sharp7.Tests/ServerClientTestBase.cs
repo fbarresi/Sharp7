@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Shouldly;
 
 namespace Sharp7.Tests
@@ -13,6 +14,7 @@ namespace Sharp7.Tests
         {
             client = new S7Client();
             var rc = client.ConnectTo(Localhost, 0, 2);
+            Task.Delay(100).Wait();
             rc.ShouldBe(0);
         }
 

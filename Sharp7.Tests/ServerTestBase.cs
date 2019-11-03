@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Shouldly;
 
 namespace Sharp7.Tests
@@ -12,6 +13,7 @@ namespace Sharp7.Tests
         {
             server = new S7Server();
             var rc = server.StartTo(Localhost);
+            Task.Delay(100).Wait();
             rc.ShouldBe(0);
         }
 
