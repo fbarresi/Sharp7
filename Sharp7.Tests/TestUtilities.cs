@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Shouldly;
@@ -328,15 +329,89 @@ namespace Sharp7.Tests
             S7.SetStringAt(buffer, 0, buffer.Length, test);
             buffer.Take(expected.Length).ToArray().ShouldBe(expected);
         }
-        //[Fact] public void TestGetCharsAt() { S7.GetCharsAt(new byte[] {1,2,3,4}, int Pos, int Size).ShouldBe(); }
-        //[Fact] public void TestSetCharsAt() { S7.SetCharsAt(new byte[] {1,2,3,4}, int Pos, string Value).ShouldBe(); }
+        
+        [Theory]
+        [InlineData(new byte[] { 55, 55, 55 }, "777")]
+        [InlineData(new byte[] { 56, 56, 56 }, "888")]
+        public void TestGetCharsAt(byte[] buffer, string expected) { S7.GetCharsAt(buffer, 0, buffer.Length).ShouldBe(expected); }
 
-        //[Fact] public void TestGetCounter() { S7.GetCounter(ushort Value).ShouldBe(); }
-        //[Fact] public void TestGetCounterAt() { S7.GetCounterAt(new ushort[] {1,2,3,4}, int Index).ShouldBe(); }
-        //[Fact] public void TestToCounter() { S7.ToCounter(int Value).ShouldBe(); }
-        //[Fact] public void TestSetCounterAt() { S7.SetCounterAt(ushort[] {1,2,3,4}, int Pos, int Value).ShouldBe(); }
-        //[Fact] public void TestGetS7TimerAt() { S7.GetS7TimerAt(new byte[] {1,2,3,4}, int Pos).ShouldBe(); }
-        //[Fact] public void TestSetS7TimespanAt() { S7.SetS7TimespanAt(new byte[] {1,2,3,4}, int Pos, TimeSpan Value).ShouldBe(); }
-        //[Fact] public void TestGetS7TimespanAt() { S7.GetS7TimespanAt(new byte[] {1,2,3,4}, int pos).ShouldBe(); }
+        [Theory]
+        [InlineData("777", new byte[] {55, 55, 55})]
+        [InlineData("888", new byte[] {56, 56, 56})]
+        public void TestSetCharsAt(string chars, byte[] expected)
+        {
+            var buffer = new byte[chars.Length];
+            S7.SetCharsAt(buffer, 0, chars); 
+            buffer.ShouldBe(expected);
+        }
+
+        [Theory]
+        [InlineData(12, 1200)] 
+        [InlineData(13, 1300)] 
+        public void TestGetCounter(ushort value, int expected) { S7.GetCounter(value).ShouldBe(expected); }
+
+        [Theory]
+        [InlineData(new ushort[]{12},0, 1200)]
+        [InlineData(new ushort[]{0,12},1, 1200)]
+        public void TestGetCounterAt(ushort[] buffer, int index, int expected) { S7.GetCounterAt(buffer, index).ShouldBe(expected); }
+
+        [Theory]
+        [InlineData(1200, 18)]
+        [InlineData(1300, 19)] 
+        public void TestToCounter(int value, ushort expected) { S7.ToCounter(value).ShouldBe(expected); }
+
+        [Theory]
+        [InlineData(0, 1200, new ushort[] {18,0})]
+        [InlineData(1, 1200, new ushort[] {0, 18})]
+        public void TestSetCounterAt(int index, int counter, ushort[] expected)
+        {
+            var buffer = new ushort[2];
+            S7.SetCounterAt(buffer, index, counter); 
+            buffer.ShouldBe(expected);
+        }
+
+        [Theory]
+        [InlineData(new byte[] { 18, 0,0,0,0,4,5,6,7,8,0,0,0,0,0,0,0,0,0 })] 
+        public void TestGetS7TimerAt(byte[] buffer) { new S7TimerEqualityComparer().Equals(S7.GetS7TimerAt(buffer, 0), new S7Timer(buffer.Take(12).ToArray())).ShouldBe(true); }
+
+        [Theory]
+        [InlineData(10,new byte[] { 0, 0, 0, 10 })]
+        public void TestSetS7TimespanAt(int milliseconds, byte[] expected)
+        {
+            var buffer = new byte[8];
+            S7.SetS7TimespanAt(buffer, 0, TimeSpan.FromMilliseconds(milliseconds));
+            buffer.Take(expected.Length).ToArray().ShouldBe(expected);
+        }
+
+        [Theory]
+        [InlineData(new byte[] { 0, 0, 0, 10 }, 10)]
+        public void TestGetS7TimespanAt(byte[] buffer, int milliseconds)
+        {
+            S7.GetS7TimespanAt(buffer, 0).ShouldBe(TimeSpan.FromMilliseconds(milliseconds));
+        }
+    }
+
+    internal sealed class S7TimerEqualityComparer : IEqualityComparer<S7Timer>
+    {
+        public bool Equals(S7Timer x, S7Timer y)
+        {
+            if (ReferenceEquals(x, y)) return true;
+            if (ReferenceEquals(x, null)) return false;
+            if (ReferenceEquals(y, null)) return false;
+            if (x.GetType() != y.GetType()) return false;
+            return x.PT.Equals(y.PT) && x.ET.Equals(y.ET) && x.IN == y.IN && x.Q == y.Q;
+        }
+
+        public int GetHashCode(S7Timer obj)
+        {
+            unchecked
+            {
+                var hashCode = obj.PT.GetHashCode();
+                hashCode = (hashCode * 397) ^ obj.ET.GetHashCode();
+                hashCode = (hashCode * 397) ^ obj.IN.GetHashCode();
+                hashCode = (hashCode * 397) ^ obj.Q.GetHashCode();
+                return hashCode;
+            }
+        }
     }
 }

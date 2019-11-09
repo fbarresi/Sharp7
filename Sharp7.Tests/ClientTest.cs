@@ -165,5 +165,25 @@ namespace Sharp7.Tests
             rc.ShouldBe(0);
             bytes.ShouldBe(buffer);
         }
+
+        [Fact]
+        public void Multivars()
+        {
+            var bytes = new byte[] { 1, 2, 3,4,5,6,7,8,9,0 };
+            var index = 30;
+            Server.RegisterArea(S7Server.SrvAreaDB, index, ref bytes, bytes.Length);
+
+            var buffer = new byte[bytes.Length];
+            var multivar = new S7MultiVar(Client);
+            multivar.ShouldNotBeNull();
+            
+            multivar.Add(new Sharp7.S7Consts.S7Tag(){Area = Sharp7.S7Consts.S7AreaDB, DBNumber = index, Elements = 2,Start = 0, WordLen = 2}, ref buffer).ShouldBe(true);
+
+            multivar.Read().ShouldBe(0);
+            multivar.Add(new Sharp7.S7Consts.S7Tag() { Area = Sharp7.S7Consts.S7AreaDB, DBNumber = index, Elements = 2, Start = 0, WordLen = 2 }, ref buffer).ShouldBe(true);
+
+            multivar.Write().ShouldBe(0);
+            
+        }
     }
 }
