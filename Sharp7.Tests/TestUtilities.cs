@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Linq.Expressions;
 using Shouldly;
 using Xunit;
@@ -212,21 +213,121 @@ namespace Sharp7.Tests
         }
 
 
-        //[Fact] public void TestGetDateTimeAt() { S7.GetDateTimeAt(new byte[] {1,2,3,4}, int Pos).ShouldBe(); }
-        //[Fact] public void TestSetDateTimeAt() { S7.SetDateTimeAt(new byte[] {1,2,3,4}, int Pos, DateTime Value).ShouldBe(); }
-        //[Fact] public void TestGetDateAt() { S7.GetDateAt(new byte[] {1,2,3,4}, int Pos).ShouldBe(); }
-        //[Fact] public void TestSetDateAt() { S7.SetDateAt(new byte[] {1,2,3,4}, int Pos, DateTime Value).ShouldBe(); }
-        //[Fact] public void TestGetTODAt() { S7.GetTODAt(new byte[] {1,2,3,4}, int Pos).ShouldBe(); }
-        //[Fact] public void TestSetTODAt() { S7.SetTODAt(new byte[] {1,2,3,4}, int Pos, DateTime Value).ShouldBe(); }
-        //[Fact] public void TestGetLTODAt() { S7.GetLTODAt(new byte[] {1,2,3,4}, int Pos).ShouldBe(); }
-        //[Fact] public void TestSetLTODAt() { S7.SetLTODAt(new byte[] {1,2,3,4}, int Pos, DateTime Value).ShouldBe(); }
-        //[Fact] public void TestGetLDTAt() { S7.GetLDTAt(new byte[] {1,2,3,4}, int Pos).ShouldBe(); }
-        //[Fact] public void TestSetLDTAt() { S7.SetLDTAt(new byte[] {1,2,3,4}, int Pos, DateTime Value).ShouldBe(); }
-        //[Fact] public void TestGetDTLAt() { S7.GetDTLAt(new byte[] {1,2,3,4}, int Pos).ShouldBe(); }
-        //[Fact] public void TestSetDTLAt() { S7.SetDTLAt(new byte[] {1,2,3,4}, int Pos, DateTime Value).ShouldBe(); }
+        [Theory]
+        [InlineData(new byte[] {16,17,18,19,20,21,0,6})]
+        public void TestGetDateTimeAt(byte[] buffer)
+        {
+            var time = new DateTime(2010, 11, 12, 13, 14, 15);
+            S7.GetDateTimeAt(buffer, 0).ShouldBe(time);
+        }
 
-        //[Fact] public void TestGetStringAt() { S7.GetStringAt(new byte[] {1,2,3,4}, int Pos).ShouldBe(); }
-        //[Fact] public void TestSetStringAt() { S7.SetStringAt(new byte[] {1,2,3,4}, int Pos, int MaxLen, string Value).ShouldBe(); }
+        [Theory]
+        [InlineData(new byte[] {16, 17, 18, 19, 20, 21, 0, 6})]
+        public void TestSetDateTimeAt(byte[] expected)
+        {
+            var time = new DateTime(2010, 11, 12, 13, 14, 15);
+            var buffer = new byte[8];
+            S7.SetDateTimeAt(buffer, 0, time);
+            buffer.ShouldBe(expected);
+        }
+
+        [Theory]
+        [InlineData(new byte[] {0,2})]
+        public void TestGetDateAt(byte[] buffer)
+        {
+            var date = new DateTime(1990, 1, 3);
+            S7.GetDateAt(buffer, 0).ShouldBe(date);
+        }
+        [Theory]
+        [InlineData(new byte[] { 0,3 })]
+        public void TestSetDateAt(byte[] expected)
+        {
+            var buffer = new byte[2];
+            var date = new DateTime(1990,1,4);
+            S7.SetDateAt(buffer, 0, date);
+            buffer.ShouldBe(expected);
+        }
+
+        [Theory]
+        [InlineData(new byte[] {0, 0,0,2}, 2)]
+        public void TestGetTODAt(byte[] buffer, int milliseconds)
+        {
+            S7.GetTODAt(buffer, 0).ShouldBe(new DateTime(0).AddMilliseconds(milliseconds));
+        }
+
+        [Theory]
+        [InlineData(new byte[] {0, 0,0,2}, 2)]
+        public void TestSetTODAt(byte[] expected, int milliseconds)
+        {
+            var buffer = new byte[4];
+            S7.SetTODAt(buffer, 0, new DateTime(0).AddMilliseconds(milliseconds));
+            buffer.ShouldBe(expected);
+        }
+        [Theory]
+        [InlineData(new byte[] { 0, 0, 0, 0,0,0,0,200 }, 2)]
+        public void TestGetLTODAt(byte[] buffer, int ticks)
+        {
+            S7.GetLTODAt(buffer, 0).ShouldBe(new DateTime(ticks));
+        }
+
+        [Theory]
+        [InlineData(new byte[] { 0, 0, 0, 0,0,0,0,200 }, 2)]
+        public void TestSetLTODAt(byte[] expected, int ticks)
+        {
+            var buffer = new byte[8];
+            S7.SetLTODAt(buffer, 0, new DateTime(ticks));
+            buffer.ShouldBe(expected);
+        }
+
+        [Theory]
+        [InlineData(new byte[] { 0, 0, 0, 0, 0, 0, 0, 200 }, 2)]
+        public void TestGetLDTAt(byte[] buffer, int ticks)
+        {
+            S7.GetLDTAt(buffer, 0).ShouldBe(new DateTime(1970, 1, 1).AddTicks(ticks));
+        }
+
+        [Theory]
+        [InlineData(new byte[] { 0, 0, 0, 0, 0, 0, 0, 200 }, 2)]
+        public void TestSetLDTAt(byte[] expected, int ticks)
+        {
+            var buffer = new byte[8];
+            S7.SetLDTAt(buffer, 0, new DateTime(1970,1,1).AddTicks(ticks));
+            buffer.ShouldBe(expected);
+        }
+
+        [Theory]
+        [InlineData(new byte[] { 10, 10, 10, 10, 10, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0 })]
+        public void TestGetDTLAt(byte[] buffer)
+        {
+            S7.GetDTLAt(buffer, 0).ShouldBe(new DateTime(2570, 10, 10,10,10,0));
+        }
+
+        [Theory]
+        [InlineData(new byte[] { 10, 10, 10, 10, 4, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0 })]
+        public void TestSetDTLAt(byte[] expected)
+        {
+            var buffer = new byte[16];
+
+            S7.SetDTLAt(buffer, 0, new DateTime(2570, 10, 10, 10, 10, 0));
+            buffer.ShouldBe(expected);
+        }
+
+
+        [Theory]
+        [InlineData(new byte[] {0, 3, 55,55,55,0,0,0,0,0}, "777")]
+        public void TestGetStringAt(byte[] buffer, string expected)
+        {
+            S7.GetStringAt(buffer, 0).ShouldBe(expected);
+        }
+
+        [Theory]
+        [InlineData("888", new byte[] {200, 3, 56,56,56})]
+        public void TestSetStringAt(string test, byte[] expected)
+        {
+            var buffer = new byte[200];
+            S7.SetStringAt(buffer, 0, buffer.Length, test);
+            buffer.Take(expected.Length).ToArray().ShouldBe(expected);
+        }
         //[Fact] public void TestGetCharsAt() { S7.GetCharsAt(new byte[] {1,2,3,4}, int Pos, int Size).ShouldBe(); }
         //[Fact] public void TestSetCharsAt() { S7.SetCharsAt(new byte[] {1,2,3,4}, int Pos, string Value).ShouldBe(); }
 
