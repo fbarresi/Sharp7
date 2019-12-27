@@ -20,13 +20,6 @@ namespace Sharp7
         return (byte)(((value / 10) << 4) | (value % 10));
     }
 
-    private static byte[] CopyFrom(byte[] buffer, int pos, int size)
-    {
-        byte[] result = new byte[size];
-        Array.Copy(buffer, pos, result, 0, size);
-        return result;
-    }
-
     public static int DataSizeByte(this int wordLength)
     {
         switch (wordLength)
