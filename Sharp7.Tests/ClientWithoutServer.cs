@@ -130,7 +130,7 @@ namespace Sharp7.Tests
         [InlineData(15, 0)]
         public void SetParameterTest(int parameterNumber, int newValue)
         {
-            var result = client.GetParam(parameterNumber, ref newValue);
+            var result = client.SetParam(parameterNumber, ref newValue);
             if (result == 0)
             {
                 int readValue = -1;
