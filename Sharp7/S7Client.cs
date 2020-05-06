@@ -537,15 +537,15 @@ namespace Sharp7
 
 		private void SendPacket(byte[] Buffer, int Len)
 		{
-			_LastError = Socket.Send(Buffer, Len);
+			if (Connected)
+				_LastError = Socket.Send(Buffer, Len);
+			else
+				_LastError = S7Consts.errTCPNotConnected;
 		}
 
 		private void SendPacket(byte[] Buffer)
 		{
-			if (Connected)
-				SendPacket(Buffer, Buffer.Length);
-			else
-				_LastError = S7Consts.errTCPNotConnected;
+			SendPacket(Buffer, Buffer.Length);
 		}
 
 		private int RecvIsoPacket()
