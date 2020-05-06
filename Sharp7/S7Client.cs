@@ -483,9 +483,6 @@ namespace Sharp7
 		private int _PDULength = 0;
 		private int _PduSizeRequested = 480;
 		private int _PLCPort = ISOTCP;
-		private int _RecvTimeout = DefaultTimeout;
-		private int _SendTimeout = DefaultTimeout;
-		private int _ConnTimeout = DefaultTimeout;
 
 		// Privates
 		private string IPAddress;
@@ -504,9 +501,9 @@ namespace Sharp7
 			try
 			{
 				Socket = new MsgSocket(); 
-				Socket.ConnectTimeout = _ConnTimeout;
-				Socket.ReadTimeout = _RecvTimeout;
-				Socket.WriteTimeout = _SendTimeout;
+				Socket.ConnectTimeout = DefaultTimeout;
+				Socket.ReadTimeout = DefaultTimeout;
+				Socket.WriteTimeout = DefaultTimeout;
 			}
 			catch
 			{
@@ -2284,11 +2281,11 @@ namespace Sharp7
 		{
 			get
 			{
-				return _ConnTimeout;
+				return Socket.ConnectTimeout;
 			}
 			set
 			{
-				_ConnTimeout = value;
+				Socket.ConnectTimeout = value;
 			}
 		}
 
@@ -2296,11 +2293,11 @@ namespace Sharp7
 		{
 			get
 			{
-				return _RecvTimeout;
+				return Socket.ReadTimeout;
 			}
 			set
 			{
-				_RecvTimeout = value;
+				Socket.ReadTimeout = value;
 			}
 		}
 
@@ -2308,11 +2305,11 @@ namespace Sharp7
 		{
 			get
 			{
-				return _SendTimeout;
+				return Socket.WriteTimeout;
 			}
 			set
 			{
-				_SendTimeout = value;
+				Socket.WriteTimeout = value;
 			}
 		}
 
