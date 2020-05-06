@@ -9,17 +9,13 @@ namespace Sharp7
 		#region S7Timer
 		TimeSpan pt;
 		TimeSpan et;
-		bool input = false;
-		bool q = false;
+		bool input ;
+		bool q;
 		public S7Timer(byte[] buff, int position)
 		{
 			if (position + 12 < buff.Length)
 			{
-				return;
-			}
-			else
-			{
-				SetTimer(new List<byte>(buff).GetRange(position, 16).ToArray());
+				SetTimer(new List<byte>(buff).GetRange(position, 12).ToArray());
 			}
 		}
 

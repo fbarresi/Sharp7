@@ -9,11 +9,11 @@ namespace Sharp7
 		#region [MultiRead/Write Helper]
 		private S7Client FClient;
 		private GCHandle[] Handles = new GCHandle[S7Client.MaxVars];
-		private int Count = 0;
+		private int Count;
 		private S7Client.S7DataItem[] Items = new S7Client.S7DataItem[S7Client.MaxVars];
 
 
-		public int[] Results = new int[S7Client.MaxVars];
+		public int[] Results { get; } = new int[S7Client.MaxVars];
 
 		private bool AdjustWordLength(int Area, ref int WordLen, ref int Amount, ref int Start)
 		{
@@ -45,7 +45,7 @@ namespace Sharp7
 		{
 			FClient = Client;
 			for (int c = 0; c < S7Client.MaxVars; c++)
-				Results[c] = (int)S7Consts.errCliItemNotAvailable;
+				Results[c] = S7Consts.errCliItemNotAvailable;
 		}
 		~S7MultiVar()
 		{
@@ -80,32 +80,27 @@ namespace Sharp7
 					Items[Count].Start = Start;
 					Items[Count].Amount = Amount;
 					GCHandle handle = GCHandle.Alloc(Buffer, GCHandleType.Pinned);
-#if WINDOWS_UWP || NETFX_CORE
-                    if (IntPtr.Size == 4)
-                        Items[Count].pData = (IntPtr)(handle.AddrOfPinnedObject().ToInt32() + Offset * Marshal.SizeOf<T>());
-                    else
-                        Items[Count].pData = (IntPtr)(handle.AddrOfPinnedObject().ToInt64() + Offset * Marshal.SizeOf<T>());
-#else
+
 					if (IntPtr.Size == 4)
 						Items[Count].pData = (IntPtr)(handle.AddrOfPinnedObject().ToInt32() + Offset * Marshal.SizeOf(typeof(T)));
 					else
 						Items[Count].pData = (IntPtr)(handle.AddrOfPinnedObject().ToInt64() + Offset * Marshal.SizeOf(typeof(T)));
-#endif
+
 					Handles[Count] = handle;
 					Count++;
 					return true;
 				}
-				else
-					return false;
-			}
-			else
+
 				return false;
+			}
+
+			return false;
 		}
 
 		public int Read()
 		{
 			int FunctionResult;
-			int GlobalResult = (int)S7Consts.errCliFunctionRefused;
+			int GlobalResult;
 			try
 			{
 				if (Count > 0)
@@ -117,7 +112,7 @@ namespace Sharp7
 					GlobalResult = FunctionResult;
 				}
 				else
-					GlobalResult = (int)S7Consts.errCliFunctionRefused;
+					GlobalResult = S7Consts.errCliFunctionRefused;
 			}
 			finally
 			{
@@ -129,7 +124,7 @@ namespace Sharp7
 		public int Write()
 		{
 			int FunctionResult;
-			int GlobalResult = (int)S7Consts.errCliFunctionRefused;
+			int GlobalResult;
 			try
 			{
 				if (Count > 0)
@@ -141,7 +136,7 @@ namespace Sharp7
 					GlobalResult = FunctionResult;
 				}
 				else
-					GlobalResult = (int)S7Consts.errCliFunctionRefused;
+					GlobalResult = S7Consts.errCliFunctionRefused;
 			}
 			finally
 			{

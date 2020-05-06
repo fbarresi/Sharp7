@@ -11,8 +11,7 @@ namespace Sharp7
         private int _ReadTimeout = 2000;
         private int _WriteTimeout = 2000;
         private int _ConnectTimeout = 1000;
-        public int LastError = 0;
-
+        private int LastError;
         public MsgSocket()
         {
         }
@@ -49,7 +48,7 @@ namespace Sharp7
                 IAsyncResult result = PingSocket.BeginConnect(Host, Port, null, null);
                 bool success = result.AsyncWaitHandle.WaitOne(_ConnectTimeout, true);
 
-				if (!success)
+                if (!success)
                 {
                     LastError = S7Consts.errTCPConnectionFailed;
                 }
@@ -57,7 +56,8 @@ namespace Sharp7
             catch
             {
                 LastError = S7Consts.errTCPConnectionFailed;
-            };
+            }
+
             PingSocket.Close();
         }
 
@@ -150,7 +150,7 @@ namespace Sharp7
             LastError = 0;
             try
             {
-                int BytesSent = TCPSocket.Send(Buffer, Size, SocketFlags.None);
+                TCPSocket.Send(Buffer, Size, SocketFlags.None);
             }
             catch
             {
