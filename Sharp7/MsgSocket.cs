@@ -97,12 +97,17 @@ namespace Sharp7
                     Expired = Environment.TickCount - Elapsed > Timeout;
                     // If timeout we clean the buffer
                     if (Expired && (SizeAvail > 0))
-                    try
                     {
-                        byte[] Flush = new byte[SizeAvail];
-                        TCPSocket.Receive(Flush, 0, SizeAvail, SocketFlags.None);
+                        try
+                        {
+                            byte[] Flush = new byte[SizeAvail];
+                            TCPSocket.Receive(Flush, 0, SizeAvail, SocketFlags.None);
+                        }
+                        catch
+                        {
+                            LastError = S7Consts.errTCPDataReceive;
+                        }
                     }
-                    catch { }
                 }
             }
             catch

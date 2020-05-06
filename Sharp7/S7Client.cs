@@ -498,21 +498,16 @@ namespace Sharp7
 
 		private void CreateSocket()
 		{
-			try
-			{
-				Socket = new MsgSocket(); 
-				Socket.ConnectTimeout = DefaultTimeout;
-				Socket.ReadTimeout = DefaultTimeout;
-				Socket.WriteTimeout = DefaultTimeout;
-			}
-			catch
-			{
-			}
+			Socket = new MsgSocket();
+			Socket.ConnectTimeout = DefaultTimeout;
+			Socket.ReadTimeout = DefaultTimeout;
+			Socket.WriteTimeout = DefaultTimeout;
 		}
 
 		private int TCPConnect()
 		{           
 			if (_LastError==0)
+			{
 				try
 				{
 					_LastError=Socket.Connect(IPAddress, _PLCPort);
@@ -521,6 +516,7 @@ namespace Sharp7
 				{
 					_LastError = S7Consts.errTCPConnectionFailed;
 				}
+			}
 			return _LastError;
 		}
        
@@ -575,10 +571,13 @@ namespace Sharp7
 				// Receives the S7 Payload          
 				RecvPacket(PDU, 7, Size - IsoHSize);
 			}
+
 			if (_LastError == 0)
+			{
 				return Size;
-			else
-				return 0;
+			}
+				
+			return 0;
 		}
 
 		private int ISOConnect()
