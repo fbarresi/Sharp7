@@ -345,10 +345,7 @@ namespace Sharp7.Tests
                 else
                     return 0;
             }
-            set
-            {
-                Srv_SetMask(server, S7Server.MkLog, value);
-            }
+            set => Srv_SetMask(server, S7Server.MkLog, value);
         }
 
         // Property EventMask R/W
@@ -365,10 +362,7 @@ namespace Sharp7.Tests
                 else
                     return 0;
             }
-            set
-            {
-                Srv_SetMask(server, S7Server.MkEvent, value);
-            }
+            set => Srv_SetMask(server, S7Server.MkEvent, value);
         }
 
 
@@ -395,10 +389,7 @@ namespace Sharp7.Tests
                 else
                     return -1;
             }
-            set
-            {
-                Srv_SetCpuStatus(server, value);
-            }
+            set => Srv_SetCpuStatus(server, value);
         }
 
         // Property Server Status Read Only

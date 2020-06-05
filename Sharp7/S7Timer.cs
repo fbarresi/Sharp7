@@ -51,34 +51,14 @@ namespace Sharp7
 				this.q = (buff[8] & 0x02) == 0x02;
 			}
 		}
-		public TimeSpan PT
-		{
-			get
-			{
-				return pt;
-			}
-		}
-		public TimeSpan ET
-		{
-			get
-			{
-				return et;
-			}
-		}
-		public bool IN
-		{
-			get
-			{
-				return input;
-			}
-		}
-		public bool Q
-		{
-			get
-			{
-				return q;
-			}
-		}
+		public TimeSpan PT => pt;
+
+		public TimeSpan ET => et;
+
+		public bool IN => input;
+
+		public bool Q => q;
+
 		#endregion
 	}
 }

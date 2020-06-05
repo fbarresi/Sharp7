@@ -2235,28 +2235,13 @@ namespace Sharp7
 			return Time_ms;
 		}
 
-		public int ExecutionTime
-		{
-			get
-			{
-				return Time_ms;
-			}
-		}
+		public int ExecutionTime => Time_ms;
 
-		public int PduSizeNegotiated
-		{
-			get
-			{
-				return _PDULength;
-			}
-		}
+		public int PduSizeNegotiated => _PDULength;
 
 		public int PduSizeRequested
 		{
-			get
-			{
-				return _PduSizeRequested;
-			}
+			get => _PduSizeRequested;
 			set
 			{
 				if (value < MinPduSizeToRequest)
@@ -2269,60 +2254,29 @@ namespace Sharp7
 
 		public int PLCPort
 		{
-			get
-			{
-				return _PLCPort;
-			}
-			set
-			{
-				_PLCPort = value;
-			}
+			get => _PLCPort;
+			set => _PLCPort = value;
 		}
 
 		public int ConnTimeout
 		{
-			get
-			{
-				return Socket.ConnectTimeout;
-			}
-			set
-			{
-				Socket.ConnectTimeout = value;
-			}
+			get => Socket.ConnectTimeout;
+			set => Socket.ConnectTimeout = value;
 		}
 
 		public int RecvTimeout
 		{
-			get
-			{
-				return Socket.ReadTimeout;
-			}
-			set
-			{
-				Socket.ReadTimeout = value;
-			}
+			get => Socket.ReadTimeout;
+			set => Socket.ReadTimeout = value;
 		}
 
 		public int SendTimeout
 		{
-			get
-			{
-				return Socket.WriteTimeout;
-			}
-			set
-			{
-				Socket.WriteTimeout = value;
-			}
+			get => Socket.WriteTimeout;
+			set => Socket.WriteTimeout = value;
 		}
 
-		public bool Connected
-		{
-			get
-			{
-				return (Socket != null) && (Socket.Connected);
-			}
-		}
-
+		public bool Connected => (Socket != null) && (Socket.Connected);
 
 		#endregion
 	}
