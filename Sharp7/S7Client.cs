@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
-#pragma warning disable 618
 
 namespace Sharp7
 {
@@ -241,7 +240,7 @@ namespace Sharp7
 			0x12,            // Var spec.
 			0x0a,            // Length of remaining bytes
 			0x10,            // Syntax ID 
-			(byte)S7Consts.S7WLByte,  // Transport Size idx=22                       
+			(byte)S7WordLength.Byte,  // Transport Size idx=22                       
 			0x00,0x00,       // Num Elements                          
 			0x00,0x00,       // DB Number (if any, else 0)            
 			0x84,            // Area Type                            
@@ -274,7 +273,7 @@ namespace Sharp7
 			0x12,            // Var spec.
 			0x0a,            // Length of remaining bytes
 			0x10,            // Syntax ID 
-			(byte)S7Consts.S7WLByte,  // Transport Size idx=3                   
+			(byte)S7WordLength.Byte,  // Transport Size idx=3                   
 			0x00,0x00,       // Num Elements                          
 			0x00,0x00,       // DB Number (if any, else 0)            
 			0x84,            // Area Type                            
@@ -301,7 +300,7 @@ namespace Sharp7
 			0x12,            // Var spec.
 			0x0a,            // Length of remaining bytes
 			0x10,            // Syntax ID 
-			(byte)S7Consts.S7WLByte,  // Transport Size idx=3                      
+			(byte)S7WordLength.Byte,  // Transport Size idx=3                      
 			0x00,0x00,       // Num Elements                          
 			0x00,0x00,       // DB Number (if any, else 0)            
 			0x84,            // Area Type                            
@@ -847,25 +846,25 @@ namespace Sharp7
 			Time_ms = 0;
 			int Elapsed = Environment.TickCount;
 			// Some adjustment
-			if (Area == S7Consts.S7AreaCT)
-				WordLen = S7Consts.S7WLCounter;
-			if (Area == S7Consts.S7AreaTM)
-				WordLen = S7Consts.S7WLTimer;
+			if (Area == (int)S7Area.CT)
+				WordLen = (int)S7WordLength.Counter;
+			if (Area == (int)S7Area.TM)
+				WordLen = (int)S7WordLength.Timer;
 
 			// Calc Word size          
 			WordSize = WordLen.DataSizeByte();
 			if (WordSize == 0)
 				return S7Consts.errCliInvalidWordLen;
 
-			if (WordLen == S7Consts.S7WLBit)
+			if (WordLen == (int)S7WordLength.Bit)
 				Amount = 1;  // Only 1 bit can be transferred at time
 			else
 			{
-				if ((WordLen != S7Consts.S7WLCounter) && (WordLen != S7Consts.S7WLTimer))
+				if ((WordLen != (int)S7WordLength.Counter) && (WordLen != (int)S7WordLength.Timer))
 				{
 					Amount = Amount * WordSize;
 					WordSize = 1;
-					WordLen = S7Consts.S7WLByte;
+					WordLen = (int)S7WordLength.Byte;
 				}
 			}        
 
@@ -885,11 +884,11 @@ namespace Sharp7
 				// Set DB Number
 				PDU[27] = (byte)Area;
 				// Set Area
-				if (Area == S7Consts.S7AreaDB)
+				if (Area == (int)S7Area.DB)
 					PDU.SetWordAt(25, (ushort)DBNumber);
 
 				// Adjusts Start and word length
-				if ((WordLen == S7Consts.S7WLBit) || (WordLen == S7Consts.S7WLCounter) || (WordLen == S7Consts.S7WLTimer))
+				if ((WordLen == (int)S7WordLength.Bit) || (WordLen == (int)S7WordLength.Counter) || (WordLen == (int)S7WordLength.Timer))
 				{
 					Address = Start;
 					PDU[22] = (byte)WordLen;
@@ -973,25 +972,25 @@ namespace Sharp7
 			Time_ms = 0;
 			int Elapsed = Environment.TickCount;
 			// Some adjustment
-			if (Area == S7Consts.S7AreaCT)
-				WordLen = S7Consts.S7WLCounter;
-			if (Area == S7Consts.S7AreaTM)
-				WordLen = S7Consts.S7WLTimer;
+			if (Area == (int)S7Area.CT)
+				WordLen = (int)S7WordLength.Counter;
+			if (Area == (int)S7Area.TM)
+				WordLen = (int)S7WordLength.Timer;
 
 			// Calc Word size          
 			WordSize = WordLen.DataSizeByte();
 			if (WordSize == 0)
 				return S7Consts.errCliInvalidWordLen;
 
-			if (WordLen == S7Consts.S7WLBit) // Only 1 bit can be transferred at time
+			if (WordLen == (int)S7WordLength.Bit) // Only 1 bit can be transferred at time
 				Amount = 1;
 			else
 			{
-				if ((WordLen != S7Consts.S7WLCounter) && (WordLen != S7Consts.S7WLTimer))
+				if ((WordLen != (int)S7WordLength.Counter) && (WordLen != (int)S7WordLength.Timer))
 				{
 					Amount = Amount * WordSize;
 					WordSize = 1;
-					WordLen = S7Consts.S7WLByte;
+					WordLen = (int)S7WordLength.Byte;
 				}
 			}        
 
@@ -1018,12 +1017,12 @@ namespace Sharp7
 				PDU[17] = (byte)0x05;
 				// Set DB Number
 				PDU[27] = (byte)Area;
-				if (Area == S7Consts.S7AreaDB)
+				if (Area == (int)S7Area.DB)
 					PDU.SetWordAt(25, (ushort)DBNumber);
 
 
 				// Adjusts Start and word length
-				if ((WordLen == S7Consts.S7WLBit) || (WordLen == S7Consts.S7WLCounter) || (WordLen == S7Consts.S7WLTimer))
+				if ((WordLen == (int)S7WordLength.Bit) || (WordLen == (int)S7WordLength.Counter) || (WordLen == (int)S7WordLength.Timer))
 				{
 					Address = Start;
 					Length = DataSize;
@@ -1047,11 +1046,11 @@ namespace Sharp7
 				// Transport Size
 				switch (WordLen)
 				{
-					case S7Consts.S7WLBit:
+					case (int)S7WordLength.Bit:
 						PDU[32] = TS_ResBit;
 						break;
-					case S7Consts.S7WLCounter:
-					case S7Consts.S7WLTimer:
+					case (int)S7WordLength.Counter:
+					case (int)S7WordLength.Timer:
 						PDU[32] = TS_ResOctet;
 						break;
 					default:
@@ -1122,7 +1121,7 @@ namespace Sharp7
 				Array.Copy(S7_MRD_ITEM, S7Item, S7Item.Length);
 				S7Item[3] = (byte)Items[c].WordLen;
 				S7Item.SetWordAt(4, (ushort)Items[c].Amount);
-				if (Items[c].Area == S7Consts.S7AreaDB)
+				if (Items[c].Area == (int)S7Area.DB)
 					S7Item.SetWordAt(6, (ushort)Items[c].DBNumber);
 				S7Item[8] = (byte)Items[c].Area;
                 
@@ -1241,18 +1240,18 @@ namespace Sharp7
 				S7DataItem[0] = 0x00;
 				switch (Items[c].WordLen)
 				{
-					case S7Consts.S7WLBit:
+					case (int)S7WordLength.Bit:
 						S7DataItem[1] = TS_ResBit;
 						break;
-					case S7Consts.S7WLCounter:
-					case S7Consts.S7WLTimer:
+					case (int)S7WordLength.Counter:
+					case (int)S7WordLength.Timer:
 						S7DataItem[1] = TS_ResOctet;
 						break;
 					default:
 						S7DataItem[1] = TS_ResByte; // byte/word/dword etc.
 						break;
 				};
-				if ((Items[c].WordLen==S7Consts.S7WLTimer) || (Items[c].WordLen == S7Consts.S7WLCounter))
+				if ((Items[c].WordLen==(int)S7WordLength.Timer) || (Items[c].WordLen == (int)S7WordLength.Counter))
 					ItemDataSize = Items[c].Amount * 2;
 				else
 					ItemDataSize = Items[c].Amount;
