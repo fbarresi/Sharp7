@@ -724,10 +724,7 @@ namespace Sharp7
 
 		public int Disconnect()
 		{
-			if (Socket != null && Socket.Connected)
-			{
-				Socket.Close();
-			}
+			Socket?.Close();
 			return 0;
 		}
 
