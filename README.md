@@ -28,3 +28,28 @@ PM> Install-Package Sharp7
 ## Do you need more power?
 
 Try [Sharp7Reactive](https://github.com/evopro-ag/Sharp7Reactive)
+
+## Get Started
+
+### Supported Targets
+- S7 300/400/WinAC CPU (fully supported)
+- S7 1200/1500 CPU
+- CP (Communication processor - 343/443/IE)
+
+### S7 1200/1500 Notes
+
+An external equipment can access to S71200/1500 CPU using the S7 'base' protocol, only working as an HMI, i.e. only basic data transfer are allowed.
+
+All other PG operations (control/directory/etc..) must follow the extended protocol, not implemented yet.
+
+Particularly **to access a DB in S71500 some additional setting plc-side are needed**.
+
+- Only global DBs can be accessed.
+
+![DB_props](http://snap7.sourceforge.net/snap7_client_file/db_1500.bmp)
+
+- The optimized block access must be turned off.
+
+- The access level must be “full” and the “connection mechanism” must allow GET/PUT.
+
+![DB_sec](http://snap7.sourceforge.net/snap7_client_file/cpu_1500.bmp)
