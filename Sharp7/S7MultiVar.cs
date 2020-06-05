@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
-#pragma warning disable 618
 
 namespace Sharp7
 {
@@ -23,20 +22,20 @@ namespace Sharp7
 			if (WordSize == 0)
 				return false;
 
-			if (Area == S7Consts.S7AreaCT)
-				WordLen = S7Consts.S7WLCounter;
-			if (Area == S7Consts.S7AreaTM)
-				WordLen = S7Consts.S7WLTimer;
+			if (Area == (int)S7Area.CT)
+				WordLen = (int)S7WordLength.Counter;
+			if (Area == (int)S7Area.TM)
+				WordLen = (int)S7WordLength.Timer;
 
-			if (WordLen == S7Consts.S7WLBit)
+			if (WordLen == (int)S7WordLength.Bit)
 				Amount = 1;  // Only 1 bit can be transferred at time
 			else
 			{
-				if ((WordLen != S7Consts.S7WLCounter) && (WordLen != S7Consts.S7WLTimer))
+				if ((WordLen != (int)S7WordLength.Counter) && (WordLen != (int)S7WordLength.Timer))
 				{
 					Amount = Amount * WordSize;
 					Start = Start * 8;
-					WordLen = S7Consts.S7WLByte;
+					WordLen = (int)S7WordLength.Byte;
 				}
 			}   
 			return true;
