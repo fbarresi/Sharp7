@@ -15,28 +15,27 @@ or read the [Wiki](https://github.com/fbarresi/Sharp7/wiki).
 
 # How to install
 
-## Package Manager
+## Package Manager or dotnet CLI
 ```
 PM> Install-Package Sharp7
 ```
- 
-## .NET CLI
+or
 ```
 > dotnet add package Sharp7
 ```
 
-## Do you need more power?
+# Do you need more power?
 
 Try [Sharp7Reactive](https://github.com/evopro-ag/Sharp7Reactive)
 
-## Get Started
+# Get Started
 
-### Supported Targets
+## Supported Targets
 - S7 300/400/WinAC CPU (fully supported)
 - S7 1200/1500 CPU
 - CP (Communication processor - 343/443/IE)
 
-### S7 1200/1500 Notes
+## S7 1200/1500 Notes
 
 An external equipment can access to S71200/1500 CPU using the S7 'base' protocol, only working as an HMI, i.e. only basic data transfer are allowed.
 
