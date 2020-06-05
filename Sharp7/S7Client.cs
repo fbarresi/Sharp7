@@ -1314,48 +1314,48 @@ namespace Sharp7
 
 		public int DBRead(int DBNumber, int Start, int Size, byte[] Buffer)
 		{
-			return ReadArea(S7Consts.S7AreaDB, DBNumber, Start, Size, S7Consts.S7WLByte, Buffer);
+			return ReadArea(S7Area.DB, DBNumber, Start, Size, S7WordLength.Byte, Buffer);
 		}
 
 		public int DBWrite(int DBNumber, int Start, int Size, byte[] Buffer)
 		{
-			return WriteArea(S7Consts.S7AreaDB, DBNumber, Start, Size, S7Consts.S7WLByte, Buffer);
+			return WriteArea(S7Area.DB, DBNumber, Start, Size, S7WordLength.Byte, Buffer);
 		}
 
 		public int MBRead(int Start, int Size, byte[] Buffer)
 		{
-			return ReadArea(S7Consts.S7AreaMK, 0, Start, Size, S7Consts.S7WLByte, Buffer);
+			return ReadArea(S7Area.MK, 0, Start, Size, S7WordLength.Byte, Buffer);
 		}
 
 		public int MBWrite(int Start, int Size, byte[] Buffer)
 		{
-			return WriteArea(S7Consts.S7AreaMK, 0, Start, Size, S7Consts.S7WLByte, Buffer);
+			return WriteArea(S7Area.MK, 0, Start, Size, S7WordLength.Byte, Buffer);
 		}
 
 		public int EBRead(int Start, int Size, byte[] Buffer)
 		{
-			return ReadArea(S7Consts.S7AreaPE, 0, Start, Size, S7Consts.S7WLByte, Buffer);
+			return ReadArea(S7Area.PE, 0, Start, Size, S7WordLength.Byte, Buffer);
 		}
 
 		public int EBWrite(int Start, int Size, byte[] Buffer)
 		{
-			return WriteArea(S7Consts.S7AreaPE, 0, Start, Size, S7Consts.S7WLByte, Buffer);
+			return WriteArea(S7Area.PE, 0, Start, Size, S7WordLength.Byte, Buffer);
 		}
 
 		public int ABRead(int Start, int Size, byte[] Buffer)
 		{
-			return ReadArea(S7Consts.S7AreaPA, 0, Start, Size, S7Consts.S7WLByte, Buffer);
+			return ReadArea(S7Area.PA, 0, Start, Size, S7WordLength.Byte, Buffer);
 		}
 
 		public int ABWrite(int Start, int Size, byte[] Buffer)
 		{
-			return WriteArea(S7Consts.S7AreaPA, 0, Start, Size, S7Consts.S7WLByte, Buffer);
+			return WriteArea(S7Area.PA, 0, Start, Size, S7WordLength.Byte, Buffer);
 		}
 
 		public int TMRead(int Start, int Amount, ushort[] Buffer)
 		{
 			byte[] sBuffer = new byte[Amount * 2];
-			int Result = ReadArea(S7Consts.S7AreaTM, 0, Start, Amount, S7Consts.S7WLTimer, sBuffer);
+			int Result = ReadArea(S7Area.TM, 0, Start, Amount, S7WordLength.Timer, sBuffer);
 			if (Result == 0)
 			{
 				for (int c = 0; c < Amount; c++)
@@ -1374,13 +1374,13 @@ namespace Sharp7
 				sBuffer[c * 2 + 1] = (byte)((Buffer[c] & 0xFF00) >> 8);
 				sBuffer[c * 2] = (byte)(Buffer[c] & 0x00FF);
 			}
-			return WriteArea(S7Consts.S7AreaTM, 0, Start, Amount, S7Consts.S7WLTimer, sBuffer);
+			return WriteArea(S7Area.TM, 0, Start, Amount, S7WordLength.Timer, sBuffer);
 		}
 
 		public int CTRead(int Start, int Amount, ushort[] Buffer)
 		{
 			byte[] sBuffer = new byte[Amount * 2];
-			int Result = ReadArea(S7Consts.S7AreaCT, 0, Start, Amount, S7Consts.S7WLCounter, sBuffer);
+			int Result = ReadArea(S7Area.CT, 0, Start, Amount, S7WordLength.Counter, sBuffer);
 			if (Result==0)
 			{
 				for (int c=0; c<Amount; c++)
@@ -1399,7 +1399,7 @@ namespace Sharp7
 				sBuffer[c * 2 + 1] = (byte)((Buffer[c] & 0xFF00)>>8);
 				sBuffer[c * 2]= (byte)(Buffer[c] & 0x00FF);
 			}
-			return WriteArea(S7Consts.S7AreaCT, 0, Start, Amount, S7Consts.S7WLCounter, sBuffer);
+			return WriteArea(S7Area.CT, 0, Start, Amount, S7WordLength.Counter, sBuffer);
 		}
 
 		#endregion
