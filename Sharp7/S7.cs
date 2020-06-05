@@ -434,7 +434,7 @@ namespace Sharp7
         {
             try
             {
-                return new DateTime(0).AddMilliseconds(S7.GetDIntAt(buffer, pos));
+                return new DateTime(0).AddMilliseconds(buffer.GetDIntAt(pos));
             }
             catch (System.ArgumentOutOfRangeException)
             {

@@ -18,7 +18,7 @@ namespace Sharp7
 		private bool AdjustWordLength(int Area, ref int WordLen, ref int Amount, ref int Start)
 		{
 			// Calc Word size          
-			int WordSize = S7.DataSizeByte(WordLen);
+			int WordSize = WordLen.DataSizeByte();
 			if (WordSize == 0)
 				return false;
 
