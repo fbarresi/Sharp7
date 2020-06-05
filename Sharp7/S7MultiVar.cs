@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+#pragma warning disable 618
 
 namespace Sharp7
 {

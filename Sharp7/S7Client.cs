@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+#pragma warning disable 618
 
 namespace Sharp7
 {
@@ -819,6 +820,15 @@ namespace Sharp7
 
 		#region [Data I/O main functions]
 
+		public int ReadArea(S7Area Area, int DBNumber, int Start, int Amount, S7WordLength WordLen, byte[] Buffer)
+		{
+			return ReadArea((int)Area, DBNumber, Start, Amount, (int)WordLen, Buffer);
+		}
+
+		public int ReadArea(S7Area Area, int DBNumber, int Start, int Amount, S7WordLength WordLen, byte[] Buffer, ref int BytesRead)
+		{
+			return ReadArea((int)Area, DBNumber, Start, Amount, (int)WordLen, Buffer, ref BytesRead);
+		}
 		public int ReadArea(int Area, int DBNumber, int Start, int Amount, int WordLen, byte[] Buffer)
 		{
 			int BytesRead = 0;
@@ -934,6 +944,16 @@ namespace Sharp7
 			return _LastError;
 		}
 
+		public int WriteArea(S7Area Area, int DBNumber, int Start, int Amount, S7WordLength WordLen, byte[] Buffer)
+		{
+			int BytesWritten = 0;
+			return WriteArea((int) Area, DBNumber, Start, Amount, (int) WordLen, Buffer, ref BytesWritten);
+		}
+
+		public int WriteArea(S7Area Area, int DBNumber, int Start, int Amount, S7WordLength WordLen, byte[] Buffer, ref int BytesWritten)
+		{
+			return WriteArea((int) Area, DBNumber, Start, Amount, (int) WordLen, Buffer, ref BytesWritten);
+		}		
 		public int WriteArea(int Area, int DBNumber, int Start, int Amount, int WordLen, byte[] Buffer)
 		{
 			int BytesWritten = 0;
