@@ -45,9 +45,9 @@ Particularly **to access a DB in S71500 some additional setting plc-side are nee
 
 - Only global DBs can be accessed.
 
-![DB_props](http://snap7.sourceforge.net/snap7_client_file/db_1500.bmp)
-
 - The optimized block access must be turned off.
+
+![DB_props](http://snap7.sourceforge.net/snap7_client_file/db_1500.bmp)
 
 - The access level must be “full” and the “connection mechanism” must allow GET/PUT.
 
