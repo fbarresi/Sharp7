@@ -81,23 +81,23 @@ namespace Sharp7
 		public const Int32 p_u32_RecoveryTime  = 14; // Not applicable here
 		public const Int32 p_u32_KeepAliveTime = 15; // Not applicable here
 		// Area ID
-		public const byte S7AreaPE = 0x81;
-		public const byte S7AreaPA = 0x82;
-		public const byte S7AreaMK = 0x83;
-		public const byte S7AreaDB = 0x84;
-		public const byte S7AreaCT = 0x1C;
-		public const byte S7AreaTM = 0x1D;
+		[Obsolete("Use enum S7Area.PE instead")]public const byte S7AreaPE = 0x81;
+		[Obsolete("Use enum S7Area.PA instead")]public const byte S7AreaPA = 0x82;
+		[Obsolete("Use enum S7Area.MK instead")]public const byte S7AreaMK = 0x83;
+		[Obsolete("Use enum S7Area.DB instead")]public const byte S7AreaDB = 0x84;
+		[Obsolete("Use enum S7Area.CT instead")]public const byte S7AreaCT = 0x1C;
+		[Obsolete("Use enum S7Area.TM instead")]public const byte S7AreaTM = 0x1D;
 		// Word Length
-		public const int S7WLBit     = 0x01;
-		public const int S7WLByte    = 0x02;
-		public const int S7WLChar    = 0x03;
-		public const int S7WLWord    = 0x04;
-		public const int S7WLInt     = 0x05;
-		public const int S7WLDWord   = 0x06;
-		public const int S7WLDInt    = 0x07;
-		public const int S7WLReal    = 0x08;
-		public const int S7WLCounter = 0x1C;
-		public const int S7WLTimer   = 0x1D;
+		[Obsolete("Use enum S7WordLength.Bit instead")]public const int S7WLBit     = 0x01;
+		[Obsolete("Use enum S7WordLength.Byte instead")]public const int S7WLByte    = 0x02;
+		[Obsolete("Use enum S7WordLength.Char instead")]public const int S7WLChar    = 0x03;
+		[Obsolete("Use enum S7WordLength.Word instead")]public const int S7WLWord    = 0x04;
+		[Obsolete("Use enum S7WordLength.Int instead")]public const int S7WLInt     = 0x05;
+		[Obsolete("Use enum S7WordLength.DWord instead")]public const int S7WLDWord   = 0x06;
+		[Obsolete("Use enum S7WordLength.DInt instead")]public const int S7WLDInt    = 0x07;
+		[Obsolete("Use enum S7WordLength.Real instead")]public const int S7WLReal    = 0x08;
+		[Obsolete("Use enum S7WordLength.Counter instead")]public const int S7WLCounter = 0x1C;
+		[Obsolete("Use enum S7WordLength.Timer instead")]public const int S7WLTimer   = 0x1D;
 		// PLC Status
 		public const int S7CpuStatusUnknown = 0x00;
 		public const int S7CpuStatusRun     = 0x08;

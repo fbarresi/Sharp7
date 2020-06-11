@@ -160,48 +160,23 @@ namespace Sharp7
             return LastError;
         }
 
-        public bool Connected
-        {
-            get
-            {
-                return (TCPSocket != null) && (TCPSocket.Connected); 
-            }
-        }
+        public bool Connected => (TCPSocket != null) && (TCPSocket.Connected);
 
         public int ReadTimeout
         {
-            get
-            {
-                return _ReadTimeout;
-            }
-            set
-            {
-                _ReadTimeout = value;
-            }
+            get => _ReadTimeout;
+            set => _ReadTimeout = value;
         }
 
         public int WriteTimeout
         {
-            get
-            {
-                return _WriteTimeout;
-            }
-            set
-            {
-                _WriteTimeout = value;
-            }
-
+            get => _WriteTimeout;
+            set => _WriteTimeout = value;
         }
         public int ConnectTimeout
         {
-            get
-            {
-                return _ConnectTimeout;
-            }
-            set
-            {
-                _ConnectTimeout = value;
-            }
+            get => _ConnectTimeout;
+            set => _ConnectTimeout = value;
         }
     }   
 }

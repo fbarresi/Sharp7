@@ -240,7 +240,7 @@ namespace Sharp7
 			0x12,            // Var spec.
 			0x0a,            // Length of remaining bytes
 			0x10,            // Syntax ID 
-			(byte)S7Consts.S7WLByte,  // Transport Size idx=22                       
+			(byte)S7WordLength.Byte,  // Transport Size idx=22                       
 			0x00,0x00,       // Num Elements                          
 			0x00,0x00,       // DB Number (if any, else 0)            
 			0x84,            // Area Type                            
@@ -273,7 +273,7 @@ namespace Sharp7
 			0x12,            // Var spec.
 			0x0a,            // Length of remaining bytes
 			0x10,            // Syntax ID 
-			(byte)S7Consts.S7WLByte,  // Transport Size idx=3                   
+			(byte)S7WordLength.Byte,  // Transport Size idx=3                   
 			0x00,0x00,       // Num Elements                          
 			0x00,0x00,       // DB Number (if any, else 0)            
 			0x84,            // Area Type                            
@@ -300,7 +300,7 @@ namespace Sharp7
 			0x12,            // Var spec.
 			0x0a,            // Length of remaining bytes
 			0x10,            // Syntax ID 
-			(byte)S7Consts.S7WLByte,  // Transport Size idx=3                      
+			(byte)S7WordLength.Byte,  // Transport Size idx=3                      
 			0x00,0x00,       // Num Elements                          
 			0x00,0x00,       // DB Number (if any, else 0)            
 			0x84,            // Area Type                            
@@ -551,7 +551,7 @@ namespace Sharp7
 				RecvPacket(PDU, 0, 4);
 				if (_LastError == 0)
 				{
-					Size = S7.GetWordAt(PDU, 2);
+					Size = PDU.GetWordAt(2);
 					// Check 0 bytes Data Packet (only TPKT+COTP = 7 bytes)
 					if (Size == IsoHSize)
 						RecvPacket(PDU, 4, 3); // Skip remaining 3 bytes and Done is still false
@@ -612,7 +612,7 @@ namespace Sharp7
 		{
 			int Length;
 			// Set PDU Size Requested
-			S7.SetWordAt(S7_PN, 23, (ushort)_PduSizeRequested);
+			S7_PN.SetWordAt(23, (ushort)_PduSizeRequested);
 			// Sends the connection request telegram
 			SendPacket(S7_PN);
 			if (_LastError == 0)
@@ -624,7 +624,7 @@ namespace Sharp7
 					if ((Length == 27) && (PDU[17] == 0) && (PDU[18] == 0))  // 20 = size of Negotiate Answer
 					{
 						// Get PDU Size Negotiated
-						_PDULength = S7.GetWordAt(PDU, 25);
+						_PDULength = PDU.GetWordAt(25);
 						if (_PDULength <= 0)
 							_LastError = S7Consts.errCliNegotiatingPDU;
 					}
@@ -723,7 +723,7 @@ namespace Sharp7
 
 		public int Disconnect()
 		{
-			Socket.Close();
+			Socket?.Close();
 			return 0;
 		}
 
@@ -816,6 +816,15 @@ namespace Sharp7
 
 		#region [Data I/O main functions]
 
+		public int ReadArea(S7Area Area, int DBNumber, int Start, int Amount, S7WordLength WordLen, byte[] Buffer)
+		{
+			return ReadArea((int)Area, DBNumber, Start, Amount, (int)WordLen, Buffer);
+		}
+
+		public int ReadArea(S7Area Area, int DBNumber, int Start, int Amount, S7WordLength WordLen, byte[] Buffer, ref int BytesRead)
+		{
+			return ReadArea((int)Area, DBNumber, Start, Amount, (int)WordLen, Buffer, ref BytesRead);
+		}
 		public int ReadArea(int Area, int DBNumber, int Start, int Amount, int WordLen, byte[] Buffer)
 		{
 			int BytesRead = 0;
@@ -837,25 +846,25 @@ namespace Sharp7
 			Time_ms = 0;
 			int Elapsed = Environment.TickCount;
 			// Some adjustment
-			if (Area == S7Consts.S7AreaCT)
-				WordLen = S7Consts.S7WLCounter;
-			if (Area == S7Consts.S7AreaTM)
-				WordLen = S7Consts.S7WLTimer;
+			if (Area == (int)S7Area.CT)
+				WordLen = (int)S7WordLength.Counter;
+			if (Area == (int)S7Area.TM)
+				WordLen = (int)S7WordLength.Timer;
 
 			// Calc Word size          
-			WordSize = S7.DataSizeByte(WordLen);
+			WordSize = WordLen.DataSizeByte();
 			if (WordSize == 0)
 				return S7Consts.errCliInvalidWordLen;
 
-			if (WordLen == S7Consts.S7WLBit)
+			if (WordLen == (int)S7WordLength.Bit)
 				Amount = 1;  // Only 1 bit can be transferred at time
 			else
 			{
-				if ((WordLen != S7Consts.S7WLCounter) && (WordLen != S7Consts.S7WLTimer))
+				if ((WordLen != (int)S7WordLength.Counter) && (WordLen != (int)S7WordLength.Timer))
 				{
 					Amount = Amount * WordSize;
 					WordSize = 1;
-					WordLen = S7Consts.S7WLByte;
+					WordLen = (int)S7WordLength.Byte;
 				}
 			}        
 
@@ -875,11 +884,11 @@ namespace Sharp7
 				// Set DB Number
 				PDU[27] = (byte)Area;
 				// Set Area
-				if (Area == S7Consts.S7AreaDB)
-					S7.SetWordAt(PDU, 25, (ushort)DBNumber);
+				if (Area == (int)S7Area.DB)
+					PDU.SetWordAt(25, (ushort)DBNumber);
 
 				// Adjusts Start and word length
-				if ((WordLen == S7Consts.S7WLBit) || (WordLen == S7Consts.S7WLCounter) || (WordLen == S7Consts.S7WLTimer))
+				if ((WordLen == (int)S7WordLength.Bit) || (WordLen == (int)S7WordLength.Counter) || (WordLen == (int)S7WordLength.Timer))
 				{
 					Address = Start;
 					PDU[22] = (byte)WordLen;
@@ -888,7 +897,7 @@ namespace Sharp7
 					Address = Start << 3;
 
 				// Num elements
-				S7.SetWordAt(PDU, 23, (ushort)NumElements);
+				PDU.SetWordAt(23, (ushort)NumElements);
 
 				// Address into the PLC (only 3 bytes)           
 				PDU[30] = (byte)(Address & 0x0FF);
@@ -931,6 +940,16 @@ namespace Sharp7
 			return _LastError;
 		}
 
+		public int WriteArea(S7Area Area, int DBNumber, int Start, int Amount, S7WordLength WordLen, byte[] Buffer)
+		{
+			int BytesWritten = 0;
+			return WriteArea((int) Area, DBNumber, Start, Amount, (int) WordLen, Buffer, ref BytesWritten);
+		}
+
+		public int WriteArea(S7Area Area, int DBNumber, int Start, int Amount, S7WordLength WordLen, byte[] Buffer, ref int BytesWritten)
+		{
+			return WriteArea((int) Area, DBNumber, Start, Amount, (int) WordLen, Buffer, ref BytesWritten);
+		}		
 		public int WriteArea(int Area, int DBNumber, int Start, int Amount, int WordLen, byte[] Buffer)
 		{
 			int BytesWritten = 0;
@@ -953,25 +972,25 @@ namespace Sharp7
 			Time_ms = 0;
 			int Elapsed = Environment.TickCount;
 			// Some adjustment
-			if (Area == S7Consts.S7AreaCT)
-				WordLen = S7Consts.S7WLCounter;
-			if (Area == S7Consts.S7AreaTM)
-				WordLen = S7Consts.S7WLTimer;
+			if (Area == (int)S7Area.CT)
+				WordLen = (int)S7WordLength.Counter;
+			if (Area == (int)S7Area.TM)
+				WordLen = (int)S7WordLength.Timer;
 
 			// Calc Word size          
-			WordSize = S7.DataSizeByte(WordLen);
+			WordSize = WordLen.DataSizeByte();
 			if (WordSize == 0)
 				return S7Consts.errCliInvalidWordLen;
 
-			if (WordLen == S7Consts.S7WLBit) // Only 1 bit can be transferred at time
+			if (WordLen == (int)S7WordLength.Bit) // Only 1 bit can be transferred at time
 				Amount = 1;
 			else
 			{
-				if ((WordLen != S7Consts.S7WLCounter) && (WordLen != S7Consts.S7WLTimer))
+				if ((WordLen != (int)S7WordLength.Counter) && (WordLen != (int)S7WordLength.Timer))
 				{
 					Amount = Amount * WordSize;
 					WordSize = 1;
-					WordLen = S7Consts.S7WLByte;
+					WordLen = (int)S7WordLength.Byte;
 				}
 			}        
 
@@ -990,20 +1009,20 @@ namespace Sharp7
 				// Setup the telegram
 				Array.Copy(S7_RW, 0, PDU, 0, Size_WR);
 				// Whole telegram Size
-				S7.SetWordAt(PDU, 2, (ushort)IsoSize);
+				PDU.SetWordAt(2, (ushort)IsoSize);
 				// Data Length
 				Length = DataSize + 4;
-				S7.SetWordAt(PDU, 15, (ushort)Length);
+				PDU.SetWordAt(15, (ushort)Length);
 				// Function
 				PDU[17] = (byte)0x05;
 				// Set DB Number
 				PDU[27] = (byte)Area;
-				if (Area == S7Consts.S7AreaDB)
-					S7.SetWordAt(PDU, 25, (ushort)DBNumber);
+				if (Area == (int)S7Area.DB)
+					PDU.SetWordAt(25, (ushort)DBNumber);
 
 
 				// Adjusts Start and word length
-				if ((WordLen == S7Consts.S7WLBit) || (WordLen == S7Consts.S7WLCounter) || (WordLen == S7Consts.S7WLTimer))
+				if ((WordLen == (int)S7WordLength.Bit) || (WordLen == (int)S7WordLength.Counter) || (WordLen == (int)S7WordLength.Timer))
 				{
 					Address = Start;
 					Length = DataSize;
@@ -1016,7 +1035,7 @@ namespace Sharp7
 				}
 
 				// Num elements
-				S7.SetWordAt(PDU, 23, (ushort)NumElements);
+				PDU.SetWordAt(23, (ushort)NumElements);
 				// Address into the PLC
 				PDU[30] = (byte)(Address & 0x0FF);
 				Address = Address >> 8;
@@ -1027,11 +1046,11 @@ namespace Sharp7
 				// Transport Size
 				switch (WordLen)
 				{
-					case S7Consts.S7WLBit:
+					case (int)S7WordLength.Bit:
 						PDU[32] = TS_ResBit;
 						break;
-					case S7Consts.S7WLCounter:
-					case S7Consts.S7WLTimer:
+					case (int)S7WordLength.Counter:
+					case (int)S7WordLength.Timer:
 						PDU[32] = TS_ResOctet;
 						break;
 					default:
@@ -1039,7 +1058,7 @@ namespace Sharp7
 						break;
 				};
 				// Length
-				S7.SetWordAt(PDU, 33, (ushort)Length);
+				PDU.SetWordAt(33, (ushort)Length);
 
 				// Copies the Data
 				Array.Copy(Buffer, Offset, PDU, 35, DataSize);
@@ -1093,7 +1112,7 @@ namespace Sharp7
             
 			// Fills Header
 			Array.Copy(S7_MRD_HEADER, 0, PDU, 0, S7_MRD_HEADER.Length);
-			S7.SetWordAt(PDU, 13, (ushort)(ItemsCount * S7Item.Length + 2));
+			PDU.SetWordAt(13, (ushort)(ItemsCount * S7Item.Length + 2));
 			PDU[18] = (byte)ItemsCount;
 			// Fills the Items
 			Offset = 19;
@@ -1101,9 +1120,9 @@ namespace Sharp7
 			{
 				Array.Copy(S7_MRD_ITEM, S7Item, S7Item.Length);
 				S7Item[3] = (byte)Items[c].WordLen;
-				S7.SetWordAt(S7Item, 4, (ushort)Items[c].Amount);
-				if (Items[c].Area == S7Consts.S7AreaDB)
-					S7.SetWordAt(S7Item, 6, (ushort)Items[c].DBNumber);
+				S7Item.SetWordAt(4, (ushort)Items[c].Amount);
+				if (Items[c].Area == (int)S7Area.DB)
+					S7Item.SetWordAt(6, (ushort)Items[c].DBNumber);
 				S7Item[8] = (byte)Items[c].Area;
                 
 				// Address into the PLC
@@ -1121,7 +1140,7 @@ namespace Sharp7
 			if (Offset > _PDULength)
 				return S7Consts.errCliSizeOverPDU;
 
-			S7.SetWordAt(PDU, 2, (ushort)Offset); // Whole size
+			PDU.SetWordAt(2, (ushort)Offset); // Whole size
 			SendPacket(PDU, Offset);
             
 			if (_LastError != 0)
@@ -1137,11 +1156,11 @@ namespace Sharp7
 				return _LastError;
 			}
 			// Check Global Operation Result
-			_LastError = CpuError(S7.GetWordAt(PDU, 17));
+			_LastError = CpuError(PDU.GetWordAt(17));
 			if (_LastError != 0)
 				return _LastError;
 			// Get true ItemsCount
-			int ItemsRead = S7.GetByteAt(PDU, 20);
+			int ItemsRead = PDU.GetByteAt(20);
 			if ((ItemsRead != ItemsCount) || (ItemsRead>MaxVars))
 			{
 				_LastError = S7Consts.errCliInvalidPlcAnswer;
@@ -1155,7 +1174,7 @@ namespace Sharp7
 				Array.Copy(PDU, Offset, S7ItemRead, 0, Length-Offset);
 				if (S7ItemRead[0] == 0xff)
 				{
-					ItemSize = (int)S7.GetWordAt(S7ItemRead, 2);
+					ItemSize = (int)S7ItemRead.GetWordAt(2);
 					if ((S7ItemRead[1] != TS_ResOctet) && (S7ItemRead[1] != TS_ResReal) && (S7ItemRead[1] != TS_ResBit))
 						ItemSize = ItemSize >> 3;
 					Marshal.Copy(S7ItemRead, 4, Items[c].pData, ItemSize);
@@ -1193,7 +1212,7 @@ namespace Sharp7
 			// Fills Header
 			Array.Copy(S7_MWR_HEADER, 0, PDU, 0, S7_MWR_HEADER.Length);
 			ParLength = ItemsCount * S7_MWR_PARAM.Length + 2;
-			S7.SetWordAt(PDU, 13, (ushort)ParLength);
+			PDU.SetWordAt(13, (ushort)ParLength);
 			PDU[18] = (byte)ItemsCount;
 			// Fills Params
 			Offset = S7_MWR_HEADER.Length;
@@ -1202,8 +1221,8 @@ namespace Sharp7
 				Array.Copy(S7_MWR_PARAM, 0, S7ParItem, 0, S7_MWR_PARAM.Length);
 				S7ParItem[3] = (byte)Items[c].WordLen;
 				S7ParItem[8] = (byte)Items[c].Area;
-				S7.SetWordAt(S7ParItem, 4, (ushort)Items[c].Amount);
-				S7.SetWordAt(S7ParItem, 6, (ushort)Items[c].DBNumber);
+				S7ParItem.SetWordAt(4, (ushort)Items[c].Amount);
+				S7ParItem.SetWordAt(6, (ushort)Items[c].DBNumber);
 				// Address into the PLC
 				int Address = Items[c].Start;
 				S7ParItem[11] = (byte)(Address & 0x0FF);
@@ -1221,26 +1240,26 @@ namespace Sharp7
 				S7DataItem[0] = 0x00;
 				switch (Items[c].WordLen)
 				{
-					case S7Consts.S7WLBit:
+					case (int)S7WordLength.Bit:
 						S7DataItem[1] = TS_ResBit;
 						break;
-					case S7Consts.S7WLCounter:
-					case S7Consts.S7WLTimer:
+					case (int)S7WordLength.Counter:
+					case (int)S7WordLength.Timer:
 						S7DataItem[1] = TS_ResOctet;
 						break;
 					default:
 						S7DataItem[1] = TS_ResByte; // byte/word/dword etc.
 						break;
 				};
-				if ((Items[c].WordLen==S7Consts.S7WLTimer) || (Items[c].WordLen == S7Consts.S7WLCounter))
+				if ((Items[c].WordLen==(int)S7WordLength.Timer) || (Items[c].WordLen == (int)S7WordLength.Counter))
 					ItemDataSize = Items[c].Amount * 2;
 				else
 					ItemDataSize = Items[c].Amount;
 
 				if ((S7DataItem[1] != TS_ResOctet) && (S7DataItem[1] != TS_ResBit))
-					S7.SetWordAt(S7DataItem, 2, (ushort)(ItemDataSize*8));
+					S7DataItem.SetWordAt(2, (ushort)(ItemDataSize*8));
 				else
-					S7.SetWordAt(S7DataItem, 2, (ushort)ItemDataSize);
+					S7DataItem.SetWordAt(2, (ushort)ItemDataSize);
 
 				Marshal.Copy(Items[c].pData, S7DataItem, 4, ItemDataSize);
 				if (ItemDataSize % 2 != 0)
@@ -1257,19 +1276,19 @@ namespace Sharp7
 			if (Offset > _PDULength)
 				return S7Consts.errCliSizeOverPDU;
 
-			S7.SetWordAt(PDU, 2, (ushort)Offset); // Whole size
-			S7.SetWordAt(PDU, 15, (ushort)DataLength); // Whole size
+			PDU.SetWordAt(2, (ushort)Offset); // Whole size
+			PDU.SetWordAt(15, (ushort)DataLength); // Whole size
 			SendPacket(PDU, Offset);
 
 			RecvIsoPacket();
 			if (_LastError==0)
 			{
 				// Check Global Operation Result
-				_LastError = CpuError(S7.GetWordAt(PDU, 17));
+				_LastError = CpuError(PDU.GetWordAt(17));
 				if (_LastError != 0)
 					return _LastError;
 				// Get true ItemsCount
-				int ItemsWritten = S7.GetByteAt(PDU, 20);
+				int ItemsWritten = PDU.GetByteAt(20);
 				if ((ItemsWritten != ItemsCount) || (ItemsWritten > MaxVars))
 				{
 					_LastError = S7Consts.errCliInvalidPlcAnswer;
@@ -1294,48 +1313,48 @@ namespace Sharp7
 
 		public int DBRead(int DBNumber, int Start, int Size, byte[] Buffer)
 		{
-			return ReadArea(S7Consts.S7AreaDB, DBNumber, Start, Size, S7Consts.S7WLByte, Buffer);
+			return ReadArea(S7Area.DB, DBNumber, Start, Size, S7WordLength.Byte, Buffer);
 		}
 
 		public int DBWrite(int DBNumber, int Start, int Size, byte[] Buffer)
 		{
-			return WriteArea(S7Consts.S7AreaDB, DBNumber, Start, Size, S7Consts.S7WLByte, Buffer);
+			return WriteArea(S7Area.DB, DBNumber, Start, Size, S7WordLength.Byte, Buffer);
 		}
 
 		public int MBRead(int Start, int Size, byte[] Buffer)
 		{
-			return ReadArea(S7Consts.S7AreaMK, 0, Start, Size, S7Consts.S7WLByte, Buffer);
+			return ReadArea(S7Area.MK, 0, Start, Size, S7WordLength.Byte, Buffer);
 		}
 
 		public int MBWrite(int Start, int Size, byte[] Buffer)
 		{
-			return WriteArea(S7Consts.S7AreaMK, 0, Start, Size, S7Consts.S7WLByte, Buffer);
+			return WriteArea(S7Area.MK, 0, Start, Size, S7WordLength.Byte, Buffer);
 		}
 
 		public int EBRead(int Start, int Size, byte[] Buffer)
 		{
-			return ReadArea(S7Consts.S7AreaPE, 0, Start, Size, S7Consts.S7WLByte, Buffer);
+			return ReadArea(S7Area.PE, 0, Start, Size, S7WordLength.Byte, Buffer);
 		}
 
 		public int EBWrite(int Start, int Size, byte[] Buffer)
 		{
-			return WriteArea(S7Consts.S7AreaPE, 0, Start, Size, S7Consts.S7WLByte, Buffer);
+			return WriteArea(S7Area.PE, 0, Start, Size, S7WordLength.Byte, Buffer);
 		}
 
 		public int ABRead(int Start, int Size, byte[] Buffer)
 		{
-			return ReadArea(S7Consts.S7AreaPA, 0, Start, Size, S7Consts.S7WLByte, Buffer);
+			return ReadArea(S7Area.PA, 0, Start, Size, S7WordLength.Byte, Buffer);
 		}
 
 		public int ABWrite(int Start, int Size, byte[] Buffer)
 		{
-			return WriteArea(S7Consts.S7AreaPA, 0, Start, Size, S7Consts.S7WLByte, Buffer);
+			return WriteArea(S7Area.PA, 0, Start, Size, S7WordLength.Byte, Buffer);
 		}
 
 		public int TMRead(int Start, int Amount, ushort[] Buffer)
 		{
 			byte[] sBuffer = new byte[Amount * 2];
-			int Result = ReadArea(S7Consts.S7AreaTM, 0, Start, Amount, S7Consts.S7WLTimer, sBuffer);
+			int Result = ReadArea(S7Area.TM, 0, Start, Amount, S7WordLength.Timer, sBuffer);
 			if (Result == 0)
 			{
 				for (int c = 0; c < Amount; c++)
@@ -1354,13 +1373,13 @@ namespace Sharp7
 				sBuffer[c * 2 + 1] = (byte)((Buffer[c] & 0xFF00) >> 8);
 				sBuffer[c * 2] = (byte)(Buffer[c] & 0x00FF);
 			}
-			return WriteArea(S7Consts.S7AreaTM, 0, Start, Amount, S7Consts.S7WLTimer, sBuffer);
+			return WriteArea(S7Area.TM, 0, Start, Amount, S7WordLength.Timer, sBuffer);
 		}
 
 		public int CTRead(int Start, int Amount, ushort[] Buffer)
 		{
 			byte[] sBuffer = new byte[Amount * 2];
-			int Result = ReadArea(S7Consts.S7AreaCT, 0, Start, Amount, S7Consts.S7WLCounter, sBuffer);
+			int Result = ReadArea(S7Area.CT, 0, Start, Amount, S7WordLength.Counter, sBuffer);
 			if (Result==0)
 			{
 				for (int c=0; c<Amount; c++)
@@ -1379,7 +1398,7 @@ namespace Sharp7
 				sBuffer[c * 2 + 1] = (byte)((Buffer[c] & 0xFF00)>>8);
 				sBuffer[c * 2]= (byte)(Buffer[c] & 0x00FF);
 			}
-			return WriteArea(S7Consts.S7AreaCT, 0, Start, Amount, S7Consts.S7WLCounter, sBuffer);
+			return WriteArea(S7Area.CT, 0, Start, Amount, S7WordLength.Counter, sBuffer);
 		}
 
 		#endregion
@@ -1426,24 +1445,24 @@ namespace Sharp7
 				int Length = RecvIsoPacket();
 				if (Length > 32) // the minimum expected
 				{
-					ushort Result = S7.GetWordAt(PDU, 27);
+					ushort Result = PDU.GetWordAt(27);
 					if (Result == 0)
 					{
 						Info.BlkFlags= PDU[42];
 						Info.BlkLang = PDU[43];
 						Info.BlkType = PDU[44];
-						Info.BlkNumber = S7.GetWordAt(PDU, 45);
-						Info.LoadSize = S7.GetDIntAt(PDU, 47);
-						Info.CodeDate = SiemensTimestamp(S7.GetWordAt(PDU, 59));
-						Info.IntfDate = SiemensTimestamp(S7.GetWordAt(PDU, 65)); 
-						Info.SBBLength = S7.GetWordAt(PDU, 67);
-						Info.LocalData = S7.GetWordAt(PDU, 71);
-						Info.MC7Size = S7.GetWordAt(PDU, 73);
-						Info.Author = S7.GetCharsAt(PDU, 75, 8).Trim(new char[]{(char)0});
-						Info.Family = S7.GetCharsAt(PDU, 83, 8).Trim(new char[]{(char)0});
-						Info.Header = S7.GetCharsAt(PDU, 91, 8).Trim(new char[]{(char)0}); 
+						Info.BlkNumber = PDU.GetWordAt(45);
+						Info.LoadSize = PDU.GetDIntAt(47);
+						Info.CodeDate = SiemensTimestamp(PDU.GetWordAt(59));
+						Info.IntfDate = SiemensTimestamp(PDU.GetWordAt(65)); 
+						Info.SBBLength = PDU.GetWordAt(67);
+						Info.LocalData = PDU.GetWordAt(71);
+						Info.MC7Size = PDU.GetWordAt(73);
+						Info.Author = PDU.GetCharsAt(75, 8).Trim(new char[]{(char)0});
+						Info.Family = PDU.GetCharsAt(83, 8).Trim(new char[]{(char)0});
+						Info.Header = PDU.GetCharsAt(91, 8).Trim(new char[]{(char)0}); 
 						Info.Version = PDU[99];
-						Info.CheckSum = S7.GetWordAt(PDU, 101);
+						Info.CheckSum = PDU.GetWordAt(101);
 					}
 					else
 						_LastError = CpuError(Result);
@@ -1555,9 +1574,9 @@ namespace Sharp7
 				Length = RecvIsoPacket();
 				if (Length > 30) // the minimum expected
 				{
-					if ((S7.GetWordAt(PDU, 27) == 0) && (PDU[29] == 0xFF))
+					if ((PDU.GetWordAt(27) == 0) && (PDU[29] == 0xFF))
 					{
-						DT = S7.GetDateTimeAt(PDU, 35);
+						DT = PDU.GetDateTimeAt(35);
 					}
 					else
 						_LastError = S7Consts.errCliInvalidPlcAnswer;
@@ -1579,14 +1598,14 @@ namespace Sharp7
 			Time_ms = 0;
 			int Elapsed = Environment.TickCount;
 
-			S7.SetDateTimeAt(S7_SET_DT, 31, DT);
+			S7_SET_DT.SetDateTimeAt(31, DT);
 			SendPacket(S7_SET_DT);
 			if (_LastError == 0)
 			{
 				Length = RecvIsoPacket();
 				if (Length > 30) // the minimum expected
 				{
-					if (S7.GetWordAt(PDU, 27) != 0)
+					if (PDU.GetWordAt(27) != 0)
 						_LastError = S7Consts.errCliInvalidPlcAnswer;
 				}
 				else
@@ -1616,7 +1635,7 @@ namespace Sharp7
 			_LastError = ReadSZL(0x0011, 0x000, ref SZL, ref Size);
 			if (_LastError == 0)
 			{
-				Info.Code = S7.GetCharsAt(SZL.Data, 2, 20);
+				Info.Code = SZL.Data.GetCharsAt(2, 20);
 				Info.V1 = SZL.Data[Size - 3];
 				Info.V2 = SZL.Data[Size - 2];
 				Info.V3 = SZL.Data[Size - 1];
@@ -1635,11 +1654,11 @@ namespace Sharp7
 			_LastError = ReadSZL(0x001C, 0x000, ref SZL, ref Size);
 			if (_LastError == 0)
 			{
-				Info.ModuleTypeName = S7.GetCharsAt(SZL.Data, 172, 32);
-				Info.SerialNumber = S7.GetCharsAt(SZL.Data, 138, 24);
-				Info.ASName = S7.GetCharsAt(SZL.Data, 2, 24);
-				Info.Copyright = S7.GetCharsAt(SZL.Data, 104, 26);
-				Info.ModuleName = S7.GetCharsAt(SZL.Data, 36, 24);
+				Info.ModuleTypeName = SZL.Data.GetCharsAt(172, 32);
+				Info.SerialNumber = SZL.Data.GetCharsAt(138, 24);
+				Info.ASName = SZL.Data.GetCharsAt(2, 24);
+				Info.Copyright = SZL.Data.GetCharsAt(104, 26);
+				Info.ModuleName = SZL.Data.GetCharsAt(36, 24);
 			}
 			if (_LastError == 0)
 				Time_ms = Environment.TickCount - Elapsed;
@@ -1655,10 +1674,10 @@ namespace Sharp7
 			_LastError = ReadSZL(0x0131, 0x001, ref SZL, ref Size);
 			if (_LastError == 0)
 			{
-				Info.MaxPduLength = S7.GetIntAt(PDU, 2);
-				Info.MaxConnections = S7.GetIntAt(PDU, 4);
-				Info.MaxMpiRate = S7.GetDIntAt(PDU, 6);
-				Info.MaxBusRate = S7.GetDIntAt(PDU, 10);
+				Info.MaxPduLength = PDU.GetIntAt(2);
+				Info.MaxConnections = PDU.GetIntAt(4);
+				Info.MaxMpiRate = PDU.GetDIntAt(6);
+				Info.MaxBusRate = PDU.GetDIntAt(10);
 			}
 			if (_LastError == 0)
 				Time_ms = Environment.TickCount - Elapsed;
@@ -1684,14 +1703,14 @@ namespace Sharp7
 			{
 				if (First)
 				{
-					S7.SetWordAt(S7_SZL_FIRST, 11, ++Seq_out);
-					S7.SetWordAt(S7_SZL_FIRST, 29, (ushort)ID);
-					S7.SetWordAt(S7_SZL_FIRST, 31, (ushort)Index);
+					S7_SZL_FIRST.SetWordAt(11, ++Seq_out);
+					S7_SZL_FIRST.SetWordAt(29, (ushort)ID);
+					S7_SZL_FIRST.SetWordAt(31, (ushort)Index);
 					SendPacket(S7_SZL_FIRST);
 				}
 				else
 				{
-					S7.SetWordAt(S7_SZL_NEXT, 11, ++Seq_out);
+					S7_SZL_NEXT.SetWordAt(11, ++Seq_out);
 					PDU[24] = (byte)Seq_in;
 					SendPacket(S7_SZL_NEXT);
 				}
@@ -1705,14 +1724,14 @@ namespace Sharp7
 					{
 						if (Length > 32) // the minimum expected
 						{
-							if ((S7.GetWordAt(PDU, 27) == 0) && (PDU[29] == (byte)0xFF))
+							if ((PDU.GetWordAt(27) == 0) && (PDU[29] == (byte)0xFF))
 							{
 								// Gets Amount of this slice
-								DataSZL = S7.GetWordAt(PDU, 31) - 8; // Skips extra params (ID, Index ...)
+								DataSZL = PDU.GetWordAt(31) - 8; // Skips extra params (ID, Index ...)
 								Done = PDU[26] == 0x00;
 								Seq_in = (byte)PDU[24]; // Slice sequence
-								SZL.Header.LENTHDR = S7.GetWordAt(PDU, 37);
-								SZL.Header.N_DR = S7.GetWordAt(PDU, 39);
+								SZL.Header.LENTHDR = PDU.GetWordAt(37);
+								SZL.Header.N_DR = PDU.GetWordAt(39);
 								Array.Copy(PDU, 41, SZL.Data, Offset, DataSZL);
 								//                                SZL.Copy(PDU, 41, Offset, DataSZL);
 								Offset += DataSZL;
@@ -1728,10 +1747,10 @@ namespace Sharp7
 					{
 						if (Length > 32) // the minimum expected
 						{
-							if ((S7.GetWordAt(PDU, 27) == 0) && (PDU[29] == (byte)0xFF))
+							if ((PDU.GetWordAt(27) == 0) && (PDU[29] == (byte)0xFF))
 							{
 								// Gets Amount of this slice
-								DataSZL = S7.GetWordAt(PDU, 31);
+								DataSZL = PDU.GetWordAt(31);
 								Done = PDU[26] == 0x00;
 								Seq_in = (byte)PDU[24]; // Slice sequence
 								Array.Copy(PDU, 37, SZL.Data, Offset, DataSZL);
@@ -1873,7 +1892,7 @@ namespace Sharp7
 				int Length = RecvIsoPacket();
 				if (Length > 30) // the minimum expected
 				{
-					ushort Result = S7.GetWordAt(PDU, 27);
+					ushort Result = PDU.GetWordAt(27);
 					if (Result == 0)
 					{
 						switch (PDU[44])
@@ -1915,7 +1934,7 @@ namespace Sharp7
 			_LastError = 0;
 			int Elapsed = Environment.TickCount;
 			// Encodes the Password
-			S7.SetCharsAt(pwd, 0, Password);
+			pwd.SetCharsAt(0, Password);
 			pwd[0] = (byte)(pwd[0] ^ 0x55);
 			pwd[1] = (byte)(pwd[1] ^ 0x55);
 			for (int c = 2; c < 8; c++)
@@ -1930,7 +1949,7 @@ namespace Sharp7
 				Length = RecvIsoPacket();
 				if (Length > 32) // the minimum expected
 				{
-					ushort Result = S7.GetWordAt(PDU, 27);
+					ushort Result = PDU.GetWordAt(27);
 					if (Result != 0)
 						_LastError = CpuError(Result);
 				}
@@ -1953,7 +1972,7 @@ namespace Sharp7
 				Length = RecvIsoPacket();
 				if (Length > 30) // the minimum expected
 				{
-					ushort Result = S7.GetWordAt(PDU, 27);
+					ushort Result = PDU.GetWordAt(27);
 					if (Result != 0)
 						_LastError = CpuError(Result);
 				}
@@ -1971,11 +1990,11 @@ namespace Sharp7
 			_LastError = ReadSZL(0x0232, 0x0004, ref SZL, ref Size);
 			if (_LastError == 0)
 			{
-				Protection.sch_schal = S7.GetWordAt(SZL.Data, 2);
-				Protection.sch_par = S7.GetWordAt(SZL.Data, 4);
-				Protection.sch_rel = S7.GetWordAt(SZL.Data, 6);
-				Protection.bart_sch = S7.GetWordAt(SZL.Data, 8);
-				Protection.anl_sch = S7.GetWordAt(SZL.Data, 10);
+				Protection.sch_schal = SZL.Data.GetWordAt(2);
+				Protection.sch_par = SZL.Data.GetWordAt(4);
+				Protection.sch_rel = SZL.Data.GetWordAt(6);
+				Protection.bart_sch = SZL.Data.GetWordAt(8);
+				Protection.anl_sch = SZL.Data.GetWordAt(10);
 			}
 			return _LastError;
 		}
@@ -1989,7 +2008,7 @@ namespace Sharp7
 			Time_ms = 0;
 			int Elapsed = Environment.TickCount;
 			Array.Copy(TPKT_ISO, 0, PDU, 0, TPKT_ISO.Length);
-			S7.SetWordAt(PDU, 2, (ushort)(Size + TPKT_ISO.Length));
+			PDU.SetWordAt(2, (ushort)(Size + TPKT_ISO.Length));
 			try
 			{
 				Array.Copy(Buffer, 0, PDU, TPKT_ISO.Length, Size);
@@ -2232,28 +2251,13 @@ namespace Sharp7
 			return Time_ms;
 		}
 
-		public int ExecutionTime
-		{
-			get
-			{
-				return Time_ms;
-			}
-		}
+		public int ExecutionTime => Time_ms;
 
-		public int PduSizeNegotiated
-		{
-			get
-			{
-				return _PDULength;
-			}
-		}
+		public int PduSizeNegotiated => _PDULength;
 
 		public int PduSizeRequested
 		{
-			get
-			{
-				return _PduSizeRequested;
-			}
+			get => _PduSizeRequested;
 			set
 			{
 				if (value < MinPduSizeToRequest)
@@ -2266,60 +2270,29 @@ namespace Sharp7
 
 		public int PLCPort
 		{
-			get
-			{
-				return _PLCPort;
-			}
-			set
-			{
-				_PLCPort = value;
-			}
+			get => _PLCPort;
+			set => _PLCPort = value;
 		}
 
 		public int ConnTimeout
 		{
-			get
-			{
-				return Socket.ConnectTimeout;
-			}
-			set
-			{
-				Socket.ConnectTimeout = value;
-			}
+			get => Socket.ConnectTimeout;
+			set => Socket.ConnectTimeout = value;
 		}
 
 		public int RecvTimeout
 		{
-			get
-			{
-				return Socket.ReadTimeout;
-			}
-			set
-			{
-				Socket.ReadTimeout = value;
-			}
+			get => Socket.ReadTimeout;
+			set => Socket.ReadTimeout = value;
 		}
 
 		public int SendTimeout
 		{
-			get
-			{
-				return Socket.WriteTimeout;
-			}
-			set
-			{
-				Socket.WriteTimeout = value;
-			}
+			get => Socket.WriteTimeout;
+			set => Socket.WriteTimeout = value;
 		}
 
-		public bool Connected
-		{
-			get
-			{
-				return (Socket != null) && (Socket.Connected);
-			}
-		}
-
+		public bool Connected => (Socket != null) && (Socket.Connected);
 
 		#endregion
 	}

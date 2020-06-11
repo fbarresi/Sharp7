@@ -14,7 +14,7 @@ namespace Sharp7.Tests
             client = new S7Client();
         }
 
-        public new void Dispose()
+        public void Dispose()
         {
             client.Disconnect();
         }

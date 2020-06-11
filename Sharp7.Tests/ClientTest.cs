@@ -177,10 +177,10 @@ namespace Sharp7.Tests
             var multivar = new S7MultiVar(Client);
             multivar.ShouldNotBeNull();
             
-            multivar.Add(new Sharp7.S7Consts.S7Tag(){Area = Sharp7.S7Consts.S7AreaDB, DBNumber = index, Elements = 2,Start = 0, WordLen = 2}, ref buffer).ShouldBe(true);
+            multivar.Add(new Sharp7.S7Consts.S7Tag(){Area = (int)S7Area.DB, DBNumber = index, Elements = 2,Start = 0, WordLen = 2}, ref buffer).ShouldBe(true);
 
             multivar.Read().ShouldBe(0);
-            multivar.Add(new Sharp7.S7Consts.S7Tag() { Area = Sharp7.S7Consts.S7AreaDB, DBNumber = index, Elements = 2, Start = 0, WordLen = 2 }, ref buffer).ShouldBe(true);
+            multivar.Add(new Sharp7.S7Consts.S7Tag() { Area = (int)S7Area.DB, DBNumber = index, Elements = 2, Start = 0, WordLen = 2 }, ref buffer).ShouldBe(true);
 
             multivar.Write().ShouldBe(0);
             

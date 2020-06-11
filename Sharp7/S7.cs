@@ -25,16 +25,16 @@ namespace Sharp7
         {
             switch (wordLength)
             {
-                case S7Consts.S7WLBit: return 1; // S7 sends 1 byte per bit
-                case S7Consts.S7WLByte: return 1;
-                case S7Consts.S7WLChar: return 1;
-                case S7Consts.S7WLWord: return 2;
-                case S7Consts.S7WLDWord: return 4;
-                case S7Consts.S7WLInt: return 2;
-                case S7Consts.S7WLDInt: return 4;
-                case S7Consts.S7WLReal: return 4;
-                case S7Consts.S7WLCounter: return 2;
-                case S7Consts.S7WLTimer: return 2;
+                case (int)S7WordLength.Bit: return 1; // S7 sends 1 byte per bit
+                case (int)S7WordLength.Byte: return 1;
+                case (int)S7WordLength.Char: return 1;
+                case (int)S7WordLength.Word: return 2;
+                case (int)S7WordLength.DWord: return 4;
+                case (int)S7WordLength.Int: return 2;
+                case (int)S7WordLength.DInt: return 4;
+                case (int)S7WordLength.Real: return 4;
+                case (int)S7WordLength.Counter: return 2;
+                case (int)S7WordLength.Timer: return 2;
                 default: return 0;
             }
         }
@@ -434,7 +434,7 @@ namespace Sharp7
         {
             try
             {
-                return new DateTime(0).AddMilliseconds(S7.GetDIntAt(buffer, pos));
+                return new DateTime(0).AddMilliseconds(buffer.GetDIntAt(pos));
             }
             catch (System.ArgumentOutOfRangeException)
             {
