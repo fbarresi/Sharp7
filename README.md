@@ -52,3 +52,5 @@ Particularly **to access a DB in S71500 some additional setting plc-side are nee
 - The access level must be “full” and the “connection mechanism” must allow GET/PUT.
 
 ![DB_sec](http://snap7.sourceforge.net/snap7_client_file/cpu_1500.bmp)
+
+# See the change log [here](https://github.com/fbarresi/Sharp7/blob/master/CHANGELOG.md)
