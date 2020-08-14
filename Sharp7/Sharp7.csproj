@@ -14,6 +14,7 @@
     <Company />
     <Version>1.0.0</Version>
     <PackageIconUrl>https://raw.githubusercontent.com/fbarresi/Sharp7/master/doc/images/logo.jpg</PackageIconUrl>
+    <PackageReleaseNotes>https://github.com/fbarresi/Sharp7/blob/master/CHANGELOG.md</PackageReleaseNotes>
   </PropertyGroup>
 
 </Project>
