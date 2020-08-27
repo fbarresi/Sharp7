@@ -49,16 +49,34 @@ namespace Sharp7
             return (buffer[pos] & Mask[bit]) != 0;
         }
 
+        [Obsolete("Use SetBitAt as extension method")]
         public static void SetBitAt(ref byte[] buffer, int pos, int bit, bool value)
         {
+            buffer.SetBitAt(pos, bit, value);
+        }
+        
+        public static void SetBitAt(this byte[] buffer, int pos, int bit, bool value)
+        {
             byte[] Mask = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
-            if (bit < 0) bit = 0;
-            if (bit > 7) bit = 7;
+            if (bit < 0)
+            {
+                bit = 0;
+            }
+
+            if (bit > 7)
+            {
+                bit = 7;
+            }
 
             if (value)
+            {
                 buffer[pos] = (byte) (buffer[pos] | Mask[bit]);
+            }
             else
+            {
                 buffer[pos] = (byte) (buffer[pos] & ~Mask[bit]);
+            }
+            
         }
 
         #endregion
@@ -87,7 +105,7 @@ namespace Sharp7
 
         public static int GetIntAt(this byte[] buffer, int pos)
         {
-            return (short) ((buffer[pos] << 8) | buffer[pos + 1]);
+            return (buffer[pos] << 8) | buffer[pos + 1];
         }
 
         public static void SetIntAt(this byte[] buffer, int pos, Int16 value)
@@ -430,13 +448,19 @@ namespace Sharp7
 
         #region Get/Set TOD (S7 TIME_OF_DAY)
 
+        [Obsolete("Use GetTODAsDateTimeAt or GetTODAsTimeSpanAt instead")]
         public static DateTime GetTODAt(this byte[] buffer, int pos)
+        {
+            return buffer.GetTODAsDateTimeAt(pos);
+        }
+        
+        public static DateTime GetTODAsDateTimeAt(this byte[] buffer, int pos)
         {
             try
             {
                 return new DateTime(0).AddMilliseconds(buffer.GetDIntAt(pos));
             }
-            catch (System.ArgumentOutOfRangeException)
+            catch (ArgumentOutOfRangeException)
             {
                 return new DateTime(0);
             }
@@ -447,12 +471,35 @@ namespace Sharp7
             TimeSpan Time = value.TimeOfDay;
             SetDIntAt(buffer, pos, (Int32) Math.Round(Time.TotalMilliseconds));
         }
+        
+        public static TimeSpan GetTODAsTimeSpanAt(this byte[] buffer, int pos)
+        {
+            try
+            {
+                return TimeSpan.FromMilliseconds(buffer.GetDIntAt(pos));
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return TimeSpan.Zero;
+            }
+        }
+
+        public static void SetTODAt(this byte[] buffer, int pos, TimeSpan value)
+        {
+            SetDIntAt(buffer, pos, (Int32) Math.Round(value.TotalMilliseconds));
+        }
 
         #endregion
 
         #region Get/Set LTOD (S7 1500 LONG TIME_OF_DAY)
 
+        [Obsolete("Use GetLTODAsDateTimeAt or GetLTODAsTimeSpanAt instead")]
         public static DateTime GetLTODAt(this byte[] buffer, int pos)
+        {
+            return buffer.GetLTODAsDateTimeAt(pos);
+        }
+        
+        public static DateTime GetLTODAsDateTimeAt(this byte[] buffer, int pos)
         {
             // .NET Tick = 100 ns, S71500 Tick = 1 ns
             try
@@ -471,6 +518,23 @@ namespace Sharp7
             SetLIntAt(buffer, pos, (Int64) Time.Ticks * 100);
         }
 
+        public static TimeSpan GetLTODAsTimeSpanAt(this byte[] buffer, int pos)
+        {
+            try
+            {
+                return TimeSpan.FromTicks(Math.Abs(GetLIntAt(buffer, pos) / 100));
+            }
+            catch (System.ArgumentOutOfRangeException)
+            {
+                return TimeSpan.Zero;
+            }
+        }
+
+        public static void SetLTODAt(this byte[] buffer, int pos, TimeSpan value)
+        {
+            SetLIntAt(buffer, pos, (Int64) value.Ticks * 100);
+        }
+        
         #endregion
 
         #region GET/SET LDT (S7 1500 Long Date and Time)

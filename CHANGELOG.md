@@ -1,7 +1,20 @@
 # Change Log
 All notable changed to this project will be documented in this file.
 
-## [1.1.71] - 08.2020
+## [1.1.xx] - ETA 09.2020
+### Added
+### Changed
+- CHANGELOG.md
+
+### Fixed
+- [#18](https://github.com/fbarresi/Sharp7/issues/18)
+	- New overloaded extension method signatures for SetBitAt
+	- Removed not necessary casting to short for GetIntAt
+	- Added overloads for S7 `Time_Of_Day` functions
+	- Added more tests
+	- made old methods obsolete
+
+## [1.1.71] - 14.08.2020
 ### Added
 - CHANGELOG.md
 ### Changed

@@ -28,6 +28,11 @@ namespace Sharp7.Tests
             S7.SetBitAt(ref buffer, 0, 1, true);
             buffer.ShouldBe(new byte[] {3, 2, 3, 4});
         }
+        [Fact] public void TestSetBitAtAsExtensionMethod() {
+            var buffer = new byte[] {1,2,3,4};
+            buffer.SetBitAt(0, 1, true);
+            buffer.ShouldBe(new byte[] {3, 2, 3, 4});
+        }
 
         //unsigned
 
@@ -254,6 +259,8 @@ namespace Sharp7.Tests
         public void TestGetTODAt(byte[] buffer, int milliseconds)
         {
             S7.GetTODAt(buffer, 0).ShouldBe(new DateTime(0).AddMilliseconds(milliseconds));
+            S7.GetTODAsDateTimeAt(buffer, 0).ShouldBe(new DateTime(0).AddMilliseconds(milliseconds));
+            S7.GetTODAsTimeSpanAt(buffer, 0).ShouldBe(TimeSpan.FromMilliseconds(milliseconds));
         }
 
         [Theory]
@@ -263,12 +270,17 @@ namespace Sharp7.Tests
             var buffer = new byte[4];
             S7.SetTODAt(buffer, 0, new DateTime(0).AddMilliseconds(milliseconds));
             buffer.ShouldBe(expected);
+            buffer = new byte[4];
+            S7.SetTODAt(buffer, 0, TimeSpan.FromMilliseconds(milliseconds));
+            buffer.ShouldBe(expected);
         }
         [Theory]
         [InlineData(new byte[] { 0, 0, 0, 0,0,0,0,200 }, 2)]
         public void TestGetLTODAt(byte[] buffer, int ticks)
         {
             S7.GetLTODAt(buffer, 0).ShouldBe(new DateTime(ticks));
+            S7.GetLTODAsDateTimeAt(buffer, 0).ShouldBe(new DateTime(ticks));
+            S7.GetLTODAsTimeSpanAt(buffer, 0).ShouldBe(TimeSpan.FromTicks(ticks));
         }
 
         [Theory]
@@ -277,6 +289,9 @@ namespace Sharp7.Tests
         {
             var buffer = new byte[8];
             S7.SetLTODAt(buffer, 0, new DateTime(ticks));
+            buffer.ShouldBe(expected);
+            buffer = new byte[8];
+            S7.SetLTODAt(buffer, 0, TimeSpan.FromTicks(ticks));
             buffer.ShouldBe(expected);
         }
 
