@@ -1,7 +1,7 @@
 # Change Log
 All notable changed to this project will be documented in this file.
 
-## [1.1.74] - 03.09.2020
+## [1.1.75] - 03.09.2020
 ### Added
 ### Changed
 - CHANGELOG.md
