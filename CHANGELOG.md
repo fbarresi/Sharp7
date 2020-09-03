@@ -1,11 +1,11 @@
 # Change Log
 All notable changed to this project will be documented in this file.
 
-## [1.1.xx] - ETA 09.2020
+## [1.1.74] - 03.09.2020
 ### Added
 ### Changed
 - CHANGELOG.md
-
+- README.md
 ### Fixed
 - [#18](https://github.com/fbarresi/Sharp7/issues/18)
 	- New overloaded extension method signatures for SetBitAt
