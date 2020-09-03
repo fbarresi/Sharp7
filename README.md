@@ -13,6 +13,9 @@ Sharp7 is a C# port of [Snap7](http://snap7.sourceforge.net) library
 For usage and documentation you can visit the [official page](http://snap7.sourceforge.net)
 or read the [Wiki](https://github.com/fbarresi/Sharp7/wiki).
 
+# Changelog
+See the changelog [here](https://github.com/fbarresi/Sharp7/blob/master/CHANGELOG.md)
+
 # How to install
 
 ## Package Manager or dotnet CLI
@@ -53,4 +56,3 @@ Particularly **to access a DB in S71500 some additional setting plc-side are nee
 
 ![DB_sec](http://snap7.sourceforge.net/snap7_client_file/cpu_1500.bmp)
 
-# See the change log [here](https://github.com/fbarresi/Sharp7/blob/master/CHANGELOG.md)
