@@ -1,6 +1,15 @@
 # Change Log
 All notable changed to this project will be documented in this file.
 
+## [1.1.78] - 04.02.2021
+### Added
+- Property `PLCIpAddress`
+- Overload of `ToString` for S7Client
+- Property `Name` as constructor param in S7Client
+### Changed
+### Fixed
+
+
 ## [1.1.75] - 03.09.2020
 ### Added
 ### Changed
