@@ -698,6 +698,7 @@ namespace Sharp7
 
 		public int ConnectTo(string Address, int Rack, int Slot)
 		{
+			PLCIpAddress = Address;
 			UInt16 RemoteTSAP = (UInt16)((ConnType << 8) + (Rack * 0x20) + Slot);
 			SetConnectionParams(Address, 0x0100, RemoteTSAP);
 			return Connect();
@@ -2267,6 +2268,8 @@ namespace Sharp7
 				_PduSizeRequested = value;       
 			}
 		}
+
+		public string PLCIpAddress { get; private set; }
 
 		public int PLCPort
 		{
