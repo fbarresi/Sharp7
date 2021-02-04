@@ -661,6 +661,13 @@ namespace Sharp7
 
 		#region [Class Control]
 
+		public S7Client(string name) : this()
+		{
+			Name = name;
+		}
+
+		public string Name { get; }
+
 		public S7Client()
 		{
 			CreateSocket();
@@ -669,6 +676,11 @@ namespace Sharp7
 		~S7Client()
 		{
 			Disconnect();
+		}
+
+		public override string ToString()
+		{ 
+			return $"PLC {Name ?? string.Empty}@{PLCIpAddress ?? "0.0.0.0"}";
 		}
 
 		public int Connect()
@@ -698,7 +710,6 @@ namespace Sharp7
 
 		public int ConnectTo(string Address, int Rack, int Slot)
 		{
-			PLCIpAddress = Address;
 			UInt16 RemoteTSAP = (UInt16)((ConnType << 8) + (Rack * 0x20) + Slot);
 			SetConnectionParams(Address, 0x0100, RemoteTSAP);
 			return Connect();
@@ -2269,7 +2280,7 @@ namespace Sharp7
 			}
 		}
 
-		public string PLCIpAddress { get; private set; }
+		public string PLCIpAddress => IPAddress;
 
 		public int PLCPort
 		{
