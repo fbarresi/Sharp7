@@ -12,7 +12,7 @@ namespace Sharp7.Tests
 
         public ServerClientTestBase() : base()
         {
-            client = new S7Client();
+            client = new S7Client("Test Plc");
             var rc = client.ConnectTo(Localhost, 0, 2);
             rc.ShouldBe(0);
         }
