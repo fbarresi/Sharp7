@@ -11,6 +11,7 @@ namespace Sharp7
 		//------------------------------------------------------------------------------
 		//                                     ERRORS                 
 		//------------------------------------------------------------------------------
+		public const int ResultOK                     = 0x00000000;
 		public const int errTCPSocketCreation         = 0x00000001;
 		public const int errTCPConnectionTimeout      = 0x00000002;
 		public const int errTCPConnectionFailed       = 0x00000003;
