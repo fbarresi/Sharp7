@@ -14,7 +14,7 @@ namespace Sharp7.Tests
         {
             client = new S7Client("Test Plc");
             var rc = client.ConnectTo(Localhost, 0, 2);
-            rc.ShouldBe(0);
+            rc.ShouldBe(Sharp7.S7Consts.ResultOK);
         }
 
 

@@ -48,14 +48,14 @@ namespace Sharp7.Tests
             var rc = Client.DBRead(index, 0, bytes.Length, buffer);
 
             //test read
-            rc.ShouldBe(0);
+            rc.ShouldBe(Sharp7.S7Consts.ResultOK);
             buffer.ShouldBe(bytes);
 
             buffer = new byte[] { 3, 2, 1 };
             rc = Client.DBWrite(index, 0, bytes.Length, buffer);
 
             //test write
-            rc.ShouldBe(0);
+            rc.ShouldBe(Sharp7.S7Consts.ResultOK);
             bytes.ShouldBe(buffer);
         }
 
@@ -69,14 +69,14 @@ namespace Sharp7.Tests
             var rc = Client.ABRead(0, bytes.Length, buffer);
 
             //test read
-            rc.ShouldBe(0);
+            rc.ShouldBe(Sharp7.S7Consts.ResultOK);
             buffer.ShouldBe(bytes);
 
             buffer = new byte[] { 3, 2, 1 };
             rc = Client.ABWrite(0, bytes.Length, buffer);
 
             //test write
-            rc.ShouldBe(0);
+            rc.ShouldBe(Sharp7.S7Consts.ResultOK);
             bytes.ShouldBe(buffer);
         }
 
@@ -91,14 +91,14 @@ namespace Sharp7.Tests
             var rc = Client.CTRead(0, 2, buffer);
 
             //test read
-            rc.ShouldBe(0);
+            rc.ShouldBe(Sharp7.S7Consts.ResultOK);
             buffer.ShouldBe(new ushort[]{0x0100,0x0302});
 
             buffer = new ushort[] {0x0403, 0x0201 };
             rc = Client.CTWrite(0, 2, buffer);
 
             //test write
-            rc.ShouldBe(0);
+            rc.ShouldBe(Sharp7.S7Consts.ResultOK);
             bytes.ShouldBe(new byte[] { 3, 4, 1, 2, 4, 5, 6, 7, 8 });
         }
 
@@ -112,14 +112,14 @@ namespace Sharp7.Tests
             var rc = Client.MBRead(0,bytes.Length,buffer);
 
             //test read
-            rc.ShouldBe(0);
+            rc.ShouldBe(Sharp7.S7Consts.ResultOK);
             buffer.ShouldBe(bytes);
 
             buffer = new byte[] { 3, 2, 1 };
             rc = Client.MBWrite(0, bytes.Length, buffer);
 
             //test write
-            rc.ShouldBe(0);
+            rc.ShouldBe(Sharp7.S7Consts.ResultOK);
             bytes.ShouldBe(buffer);
         }
 
@@ -134,14 +134,14 @@ namespace Sharp7.Tests
             var rc = Client.TMRead(0, 2, buffer);
 
             //test read
-            rc.ShouldBe(0);
+            rc.ShouldBe(Sharp7.S7Consts.ResultOK);
             buffer.ShouldBe(new ushort[] { 0x0100, 0x0302 });
 
             buffer = new ushort[] { 0x0403, 0x0201 };
             rc = Client.TMWrite(0, 2, buffer);
 
             //test write
-            rc.ShouldBe(0);
+            rc.ShouldBe(Sharp7.S7Consts.ResultOK);
             bytes.ShouldBe(new byte[] {3, 4, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11});
         }
 
@@ -155,14 +155,14 @@ namespace Sharp7.Tests
             var rc = Client.EBRead(0, bytes.Length, buffer);
 
             //test read
-            rc.ShouldBe(0);
+            rc.ShouldBe(Sharp7.S7Consts.ResultOK);
             buffer.ShouldBe(bytes);
 
             buffer = new byte[] { 3, 2, 1 };
             rc = Client.EBWrite(0, bytes.Length, buffer);
 
             //test write
-            rc.ShouldBe(0);
+            rc.ShouldBe(Sharp7.S7Consts.ResultOK);
             bytes.ShouldBe(buffer);
         }
 
@@ -179,10 +179,10 @@ namespace Sharp7.Tests
             
             multivar.Add(new Sharp7.S7Consts.S7Tag(){Area = (int)S7Area.DB, DBNumber = index, Elements = 2,Start = 0, WordLen = 2}, ref buffer).ShouldBe(true);
 
-            multivar.Read().ShouldBe(0);
+            multivar.Read().ShouldBe(Sharp7.S7Consts.ResultOK);
             multivar.Add(new Sharp7.S7Consts.S7Tag() { Area = (int)S7Area.DB, DBNumber = index, Elements = 2, Start = 0, WordLen = 2 }, ref buffer).ShouldBe(true);
 
-            multivar.Write().ShouldBe(0);
+            multivar.Write().ShouldBe(Sharp7.S7Consts.ResultOK);
             
         }
     }
