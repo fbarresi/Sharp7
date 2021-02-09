@@ -1,6 +1,12 @@
 # Change Log
 All notable changed to this project will be documented in this file.
 
+## [1.1.79] - 09.02.2021
+### Added
+- Constant for no errors `S7Consts.ResultOK`
+### Changed
+### Fixed
+
 ## [1.1.78] - 04.02.2021
 ### Added
 - Property `PLCIpAddress`
