@@ -337,11 +337,12 @@ namespace Sharp7.Tests
         }
 
         [Theory]
-        [InlineData("888", new byte[] {200, 3, 56,56,56})]
-        public void TestSetStringAt(string test, byte[] expected)
+        [InlineData("888", 200, new byte[] {200, 3, 56,56,56})]
+        [InlineData("888888", 5, new byte[] {5, 5, 56,56,56,56,56})]
+        public void TestSetStringAt(string test, int maxLength, byte[] expected)
         {
-            var buffer = new byte[200];
-            S7.SetStringAt(buffer, 0, buffer.Length, test);
+            var buffer = new byte[maxLength+2];
+            S7.SetStringAt(buffer, 0, maxLength, test);
             buffer.Take(expected.Length).ToArray().ShouldBe(expected);
         }
         

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Sharp7
@@ -615,10 +616,12 @@ namespace Sharp7
 
         public static void SetStringAt(this byte[] buffer, int pos, int MaxLen, string value)
         {
-            int size = value.Length;
+            int length = value.Length;
+            // checking current length against MaxLen
+            if (length > MaxLen) length = MaxLen;
             buffer[pos] = (byte) MaxLen;
-            buffer[pos + 1] = (byte) size;
-            Encoding.UTF8.GetBytes(value, 0, size, buffer, pos + 2);
+            buffer[pos + 1] = (byte) length;
+            Encoding.UTF8.GetBytes(value, 0, length, buffer, pos + 2);
         }
 
         #endregion
