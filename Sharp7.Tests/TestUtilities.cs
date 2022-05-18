@@ -25,7 +25,7 @@ namespace Sharp7.Tests
         [Fact] public void TestGetBitAt() { S7.GetBitAt(new byte[] {1,2,3,4}, 0, 0).ShouldBe(true); }
         [Fact] public void TestSetBitAt() {
             var buffer = new byte[] {1,2,3,4};
-            S7.SetBitAt(ref buffer, 0, 1, true);
+            S7.SetBitAt(buffer, 0, 1, true);
             buffer.ShouldBe(new byte[] {3, 2, 3, 4});
         }
         [Fact] public void TestSetBitAtAsExtensionMethod() {

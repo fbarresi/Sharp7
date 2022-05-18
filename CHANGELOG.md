@@ -1,6 +1,12 @@
 # Change Log
 All notable changed to this project will be documented in this file.
 
+## [1.1.81] - 18.05.2022
+### Added
+### Changed
+### Fixed
+- Removed obsolete SetBitAt  [#27](https://github.com/fbarresi/Sharp7/issues/27)
+
 ## [1.1.80] - 18.05.2022
 ### Added
 ### Changed

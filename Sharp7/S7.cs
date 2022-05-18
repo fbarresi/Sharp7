@@ -49,12 +49,6 @@ namespace Sharp7
             return (buffer[pos] & Mask[bit]) != 0;
         }
 
-        [Obsolete("Use SetBitAt as extension method")]
-        public static void SetBitAt(ref byte[] buffer, int pos, int bit, bool value)
-        {
-            buffer.SetBitAt(pos, bit, value);
-        }
-        
         public static void SetBitAt(this byte[] buffer, int pos, int bit, bool value)
         {
             byte[] Mask = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
