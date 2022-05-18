@@ -1,6 +1,12 @@
 # Change Log
 All notable changed to this project will be documented in this file.
 
+## [1.1.80] - 18.05.2022
+### Added
+### Changed
+### Fixed
+- Fixed casting in GetIntAt [#29](https://github.com/fbarresi/Sharp7/issues/29)
+
 ## [1.1.79] - 09.02.2021
 ### Added
 - Constant for no errors `S7Consts.ResultOK`

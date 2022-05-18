@@ -100,7 +100,7 @@ namespace Sharp7.Tests
 
         [Theory]
         [InlineData(new byte[] { 1, 1, 0, 0 }, 0, 257)]
-        public void TestGetIntAt(byte[] buffer, int pos, int expected) { S7.GetIntAt(buffer, pos).ShouldBe(expected); }
+        public void TestGetIntAt(byte[] buffer, int pos, short expected) { S7.GetIntAt(buffer, pos).ShouldBe(expected); }
 
         [Theory]
         [InlineData(new byte[] { 0, 0, 0, 0 }, 0, 1, new byte[] { 0, 1, 0, 0 })]

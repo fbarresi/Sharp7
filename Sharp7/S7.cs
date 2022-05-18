@@ -103,9 +103,9 @@ namespace Sharp7
 
         #region Get/Set 16 bit signed value (S7 int) -32768..32767
 
-        public static int GetIntAt(this byte[] buffer, int pos)
+        public static short GetIntAt(this byte[] buffer, int pos)
         {
-            return (buffer[pos] << 8) | buffer[pos + 1];
+            return (short)((buffer[pos] << 8) | buffer[pos + 1]);
         }
 
         public static void SetIntAt(this byte[] buffer, int pos, Int16 value)
