@@ -1723,7 +1723,7 @@ namespace Sharp7
 				else
 				{
 					S7_SZL_NEXT.SetWordAt(11, ++Seq_out);
-					PDU[24] = (byte)Seq_in;
+					S7_SZL_NEXT[24] = (byte)Seq_in;
 					SendPacket(S7_SZL_NEXT);
 				}
 				if (_LastError != 0)
