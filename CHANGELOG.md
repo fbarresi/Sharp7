@@ -1,6 +1,12 @@
 # Change Log
 All notable changed to this project will be documented in this file.
 
+## [1.1.84] - 11.05.2023
+### Added
+### Changed
+### Fixed
+- Fixed ReadSZL [#36](https://github.com/fbarresi/Sharp7/issues/36)
+
 ## [1.1.82] - 18.05.2022
 ### Added
 ### Changed
